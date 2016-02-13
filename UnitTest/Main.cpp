@@ -1,9 +1,10 @@
 #include <iostream>
-#include "..\Engine\Foo.h"
+
+#include "Framework\UnitTest.h"
+using namespace Hush::UnitTest;
 
 int main()
 {
-    std::cout << "Hello" << std::endl;
-    std::cout << Foo() << std::endl;
-    return 0;
+    TestRunner::RunTests();
+    std::wcin.get();
 }

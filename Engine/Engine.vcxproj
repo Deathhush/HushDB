@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Common\BasicType.h" />
     <ClInclude Include="Foo.h" />
   </ItemGroup>
   <ItemGroup>
