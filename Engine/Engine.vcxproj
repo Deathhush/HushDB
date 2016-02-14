@@ -21,9 +21,14 @@
   <ItemGroup>
     <ClInclude Include="..\Common\BasicType.h" />
     <ClInclude Include="Foo.h" />
+    <ClInclude Include="QueryProcessor\Tokenizer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Foo.cpp" />
+    <ClCompile Include="QueryProcessor\Tokenizer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="QueryProcessor\SqlSamples.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F52EC048-342E-4E49-AFBB-A4E2ABAAC764}</ProjectGuid>

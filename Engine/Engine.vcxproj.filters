@@ -5,13 +5,27 @@
     <ClInclude Include="..\Common\BasicType.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="QueryProcessor\Tokenizer.h">
+      <Filter>QueryProcessor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Foo.cpp" />
+    <ClCompile Include="QueryProcessor\Tokenizer.cpp">
+      <Filter>QueryProcessor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">
       <UniqueIdentifier>{b66a9375-f77d-4859-a362-5190fa3ba387}</UniqueIdentifier>
     </Filter>
+    <Filter Include="QueryProcessor">
+      <UniqueIdentifier>{85d3dcbb-45f9-4e32-8294-890901a21369}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="QueryProcessor\SqlSamples.txt">
+      <Filter>QueryProcessor</Filter>
+    </Text>
   </ItemGroup>
 </Project>
