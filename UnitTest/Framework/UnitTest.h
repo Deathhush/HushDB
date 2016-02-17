@@ -174,7 +174,34 @@ namespace Hush
             template <typename T>
             static void IsNotNull(const T* pointer,  const wstring& message = wstring())
             {
-                if (!pointer)
+                if (pointer == nullptr)
+                {
+                    throw message;
+                }
+            }
+
+            template <typename T>
+            static void IsNull(const T* pointer, const wstring& message = wstring())
+            {
+                if (pointer != nullptr)
+                {
+                    throw message;
+                }
+            }
+
+            template <typename T>
+            static void IsNotNullPtr(const shared_ptr<T>& pointer, const wstring& message = wstring())
+            {
+                if (pointer == nullptr)
+                {
+                    throw message;
+                }
+            }
+
+            template <typename T>
+            static void IsNullPtr(const shared_ptr<T>& pointer, const wstring& message = wstring())
+            {
+                if (pointer != nullptr)
                 {
                     throw message;
                 }

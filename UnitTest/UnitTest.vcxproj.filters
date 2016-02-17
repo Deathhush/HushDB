@@ -9,6 +9,7 @@
       <Filter>Framework</Filter>
     </ClCompile>
     <ClCompile Include="TokenizerTests.cpp" />
+    <ClCompile Include="ParserTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Framework">

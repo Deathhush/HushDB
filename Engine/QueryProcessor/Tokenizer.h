@@ -2,7 +2,6 @@
 #define HUSH_TOKENIZER_H
 
 #include <vector>
-using namespace std;
 
 #include "..\..\Common\BasicType.h"
 using namespace Hush;
@@ -27,6 +26,7 @@ namespace HushDB
 
     struct SqlToken
     {
+        typedef vector<SqlToken> List;
         SqlTokenType TokenType;
 
         int Row;

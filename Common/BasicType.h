@@ -12,6 +12,9 @@
 #define HUSH_BASICTYPE_H
 
 #include <string>
+#include <memory>
+
+using namespace std;
 
 namespace Hush
 {
@@ -27,8 +30,10 @@ namespace Hush
 	typedef bool Bool;
 
     typedef wchar_t Char;
-    typedef std::wstring String;
+    typedef wstring String;
+    typedef shared_ptr<String> StringPtr;
     #define T(X) L ## X
+    #define STR(X) String(L ## X)
 
 }
 #endif

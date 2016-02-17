@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\BasicType.h" />
+    <ClInclude Include="QueryProcessor\Parser.h" />
     <ClInclude Include="QueryProcessor\Tokenizer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="QueryProcessor\Parser.cpp" />
     <ClCompile Include="QueryProcessor\Tokenizer.cpp" />
   </ItemGroup>
   <ItemGroup>

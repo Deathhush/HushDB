@@ -6,3 +6,4 @@
 /_bin/*
 /.vs/*
 /HushDB.sdf
+*.opendb

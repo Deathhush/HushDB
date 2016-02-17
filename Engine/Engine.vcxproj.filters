@@ -7,9 +7,15 @@
     <ClInclude Include="QueryProcessor\Tokenizer.h">
       <Filter>QueryProcessor</Filter>
     </ClInclude>
+    <ClInclude Include="QueryProcessor\Parser.h">
+      <Filter>QueryProcessor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">
+      <Filter>QueryProcessor</Filter>
+    </ClCompile>
+    <ClCompile Include="QueryProcessor\Parser.cpp">
       <Filter>QueryProcessor</Filter>
     </ClCompile>
   </ItemGroup>

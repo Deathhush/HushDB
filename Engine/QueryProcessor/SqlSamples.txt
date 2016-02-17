@@ -8,3 +8,10 @@ select c1, c2 from t1
 symbol: ,  *
 keywords: select from
 identifier
+
+2/17/2016
+
+SelectStmt := select <TargetList> <FromClause>
+TargetList := <TargetElement> { , <TargetList> }
+TargetElement := identifier | *
+FromClause := from identifier
