@@ -17,6 +17,14 @@ namespace Hush
             }
         }
 
+        void Assert::IsFalse(bool condition, const wstring& message)
+        {
+            if (condition)
+            {
+                throw message;
+            }
+        }
+
         void TestRunner::AddTestClass(TestClassInfo* info)
         {
             if (!headTestClassInfo)

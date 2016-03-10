@@ -171,6 +171,8 @@ namespace Hush
         public:
             static void IsTrue(bool condition, const wstring& message = wstring());
 
+            static void IsFalse(bool condition, const wstring& message = wstring());
+
             template <typename T>
             static void IsNotNull(const T* pointer,  const wstring& message = wstring())
             {

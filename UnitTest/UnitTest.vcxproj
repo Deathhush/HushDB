@@ -156,9 +156,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClientTests.cpp" />
     <ClCompile Include="Framework\UnitTest.cpp" />
     <ClCompile Include="Framework\UnitTestTests.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MemoryStorageTests.cpp" />
     <ClCompile Include="ParserTests.cpp" />
     <ClCompile Include="TokenizerTests.cpp" />
   </ItemGroup>

@@ -10,6 +10,12 @@
     <ClInclude Include="QueryProcessor\Parser.h">
       <Filter>QueryProcessor</Filter>
     </ClInclude>
+    <ClInclude Include="Client\Client.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="StorageEngine\MemoryStorage.h">
+      <Filter>StorageEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">
@@ -25,6 +31,12 @@
     </Filter>
     <Filter Include="QueryProcessor">
       <UniqueIdentifier>{85d3dcbb-45f9-4e32-8294-890901a21369}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client">
+      <UniqueIdentifier>{7a5fd9a2-0b71-484e-a127-48e672055b08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StorageEngine">
+      <UniqueIdentifier>{3239043a-bb98-4b24-b171-d399c980eb30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
