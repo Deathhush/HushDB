@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
 #include "..\..\Common\BasicType.h"
 
 namespace Hush
@@ -174,6 +175,55 @@ namespace Hush
             {}
         };
 
+        template <typename T>
+        struct ToStringTrait
+        {
+            enum { Supported = false };
+        };
+
+        template <typename T>
+        struct Convert
+        {
+            static String ToString(const T& value) { return String(); }
+        };
+        
+        // Int
+        template <>
+        struct ToStringTrait<Int32>
+        {
+            enum { Supported = true };
+        };
+
+        template <>
+        struct Convert<Int32>
+        {
+            static String ToString(const Int32& value)
+            {
+                wstringstream ss;
+                ss << value;
+                String result;
+                ss >> result;
+
+                return result;
+            }
+        };
+
+        // String
+        template <>
+        struct ToStringTrait<String>
+        {
+            enum { Supported = true };
+        };
+
+        template <>
+        struct Convert<String>
+        {
+            static String ToString(const String& value)
+            {
+                return value;               
+            }
+        };
+
         class Assert
         {
         public:
@@ -234,7 +284,16 @@ namespace Hush
             {
                 if (!(expected == actual))
                 {
-                    throw AssertFailedException(STR("Assert::AreEqual failed. ") + message);
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ") 
+                            + STR("Expected:<") + Convert<T>::ToString(expected) + STR(">. Actual:<") + Convert<T>::ToString(actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreEqual failed. ") + message);
+                    }
                 }
             }
 
@@ -243,7 +302,16 @@ namespace Hush
             {
                 if (notExpected == actual)
                 {
-                    throw AssertFailedException(STR("Assert::AreNotEqual failed. ") + message);
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ")
+                            + STR("Expected any value except:<") + Convert<T>::ToString(notExpected) + STR(">. Actual:<") + Convert<T>::ToString(actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreNotEqual failed. ") + message);
+                    }
                 }
             }
 

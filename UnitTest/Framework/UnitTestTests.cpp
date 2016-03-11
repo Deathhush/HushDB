@@ -25,4 +25,12 @@ TESTCLASS(UnitTestTests)
     {
         throw runtime_error("test");
     }
+
+    TESTMETHOD(TestAssertion)        
+    {
+        auto s = Convert<int>::ToString(100);
+        Assert::AreEqual(STR("100"), s);
+        Assert::IsTrue(ToStringTrait<int>::Supported);
+        Assert::IsFalse(ToStringTrait<runtime_error>::Supported);        
+    }
 };
