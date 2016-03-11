@@ -22,15 +22,15 @@ TESTCLASS(MapDataRowTests)
                 
         IDataRow::Ptr row = mapRow;
 
-        DbInt::Ptr c1 = dynamic_pointer_cast<DbInt>(row->GetValue(STR("id")));
+        DbInt::Ptr c1 = row->GetValue<DbInt>(STR("id"));
         Assert::AreEqual(1, c1->Value);
         Assert::IsFalse(c1->IsNull);
 
-        DbString::Ptr c2 = dynamic_pointer_cast<DbString>(row->GetValue(STR("data")));
+        DbString::Ptr c2 = row->GetValue<DbString>(STR("data"));
         Assert::AreEqual(STR("test data 1"), c2->Value);
         Assert::IsFalse(c2->IsNull);
 
-        DbInt::Ptr c3 = dynamic_pointer_cast<DbInt>(row->GetValue(STR("region")));
+        DbInt::Ptr c3 = row->GetValue<DbInt>(STR("region"));
         Assert::AreEqual(1, c3->Value);
         Assert::IsFalse(c3->IsNull);        
     }
@@ -62,15 +62,15 @@ TESTCLASS(VectorTableTests)
 
         IDataRow::Ptr row1 = reader->Current();
 
-        DbInt::Ptr c1 = dynamic_pointer_cast<DbInt>(row1->GetValue(STR("id")));
+        DbInt::Ptr c1 = row1->GetValue<DbInt>(STR("id"));
         Assert::AreEqual(1, c1->Value);
         Assert::IsFalse(c1->IsNull);
 
-        DbString::Ptr c2 = dynamic_pointer_cast<DbString>(row1->GetValue(STR("data")));
+        DbString::Ptr c2 = row1->GetValue<DbString>(STR("data"));
         Assert::AreEqual(STR("test data 1"), c2->Value);
         Assert::IsFalse(c2->IsNull);
 
-        DbInt::Ptr c3 = dynamic_pointer_cast<DbInt>(row1->GetValue(STR("region")));
+        DbInt::Ptr c3 = row1->GetValue<DbInt>(STR("region"));
         Assert::AreEqual(10, c3->Value);
         Assert::IsFalse(c3->IsNull);
 
@@ -78,15 +78,15 @@ TESTCLASS(VectorTableTests)
 
         IDataRow::Ptr row2 = reader->Current();
 
-        c1 = dynamic_pointer_cast<DbInt>(row2->GetValue(STR("id")));
+        c1 = row2->GetValue<DbInt>(STR("id"));
         Assert::AreEqual(2, c1->Value);
         Assert::IsFalse(c1->IsNull);
 
-        c2 = dynamic_pointer_cast<DbString>(row2->GetValue(STR("data")));
+        c2 = row2->GetValue<DbString>(STR("data"));
         Assert::AreEqual(STR("test data 2"), c2->Value);
         Assert::IsFalse(c2->IsNull);
 
-        c3 = dynamic_pointer_cast<DbInt>(row2->GetValue(STR("region")));
+        c3 = row2->GetValue<DbInt>(STR("region"));
         Assert::AreEqual(20, c3->Value);
         Assert::IsFalse(c3->IsNull);
         

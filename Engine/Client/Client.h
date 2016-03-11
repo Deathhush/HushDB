@@ -50,6 +50,14 @@ namespace HushDB
     {
         typedef shared_ptr<IDataRow> Ptr;
         virtual shared_ptr<DbValue> GetValue(const String& columnName) = 0;
+
+        template<typename T>
+        shared_ptr<T> GetValue(const String& columnName)
+        {
+            return dynamic_pointer_cast<T>(this->GetValue(columnName));
+        }
+
+        virtual ~IDataRow() {}
     };
         
     struct IDataReader
