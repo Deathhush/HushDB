@@ -35,5 +35,21 @@ namespace Hush
     #define T(X) L ## X
     #define STR(X) String(L ## X)
 
+    class Exception
+    {
+    protected:
+        String message;
+    public:
+        Exception(const String& message)
+            :message(message)
+        {
+        }
+
+        const String& GetMessage() const
+        {
+            return message;
+        }
+    };
+
 }
 #endif

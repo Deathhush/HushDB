@@ -8,23 +8,7 @@ using namespace std;
 namespace Hush
 {
     namespace UnitTest
-    {    
-        void Assert::IsTrue(bool condition, const wstring& message)
-        {
-            if (!condition)
-            {
-                throw message;
-            }
-        }
-
-        void Assert::IsFalse(bool condition, const wstring& message)
-        {
-            if (condition)
-            {
-                throw message;
-            }
-        }
-
+    {
         void TestRunner::AddTestClass(TestClassInfo* info)
         {
             if (!headTestClassInfo)
@@ -53,10 +37,14 @@ namespace Hush
                     info = info->next;
                 }
             }
-            catch (wstring& e)
+            catch (AssertFailedException& e)
             {
-                wcout << e << endl;
+                wcout << e.GetMessage() << endl;
                 allTestPassed = false;
+            }
+            catch(...)
+            {
+                wcout << L"Unhandled exception caught. Test failed." << endl;
             }
 
             if (allTestPassed)

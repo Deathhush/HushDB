@@ -158,7 +158,7 @@ namespace Hush
         Bool hasException = false;  \
         try { ExceptionWrapper##MethodPostfix(); } \
         catch (ExceptionType&) { hasException = true; } \
-        Assert::IsTrue(hasException, wstring(L"Expected exception of type ") + wstring(L#ExceptionType)); \
+        Assert::IsTrue(hasException, String(L"Expected exception of type ") + String(L#ExceptionType)); \
         } \
         virtual void ExceptionWrapper##MethodPostfix()
 
@@ -166,71 +166,91 @@ namespace Hush
 
 #define EXPECTEXCEPTION(ExceptionType)   EXPECTEXCEPTION_INTERNAL(ExceptionType, __LINE__)  
 
+        class AssertFailedException : public Exception
+        {
+        public:
+            AssertFailedException(const String& message)
+                :Exception(message)
+            {}
+        };
+
         class Assert
         {
         public:
-            static void IsTrue(bool condition, const wstring& message = wstring());
+            static void IsTrue(bool condition, const String& message = String())
+            {
+                if (!condition)
+                {
+                    throw AssertFailedException(STR("Assert::IsTrue failed. ") + message);
+                }
+            }
 
-            static void IsFalse(bool condition, const wstring& message = wstring());
+            static void IsFalse(bool condition, const String& message = String())
+            {
+                if (condition)
+                {
+                    throw AssertFailedException(STR("Assert::IsFalse failed. ") + message);
+                }
+            }
 
             template <typename T>
-            static void IsNotNull(const T* pointer,  const wstring& message = wstring())
+            static void IsNotNull(const T* pointer,  const String& message = String())
             {
                 if (pointer == nullptr)
                 {
-                    throw message;
+                    throw AssertFailedException(STR("Assert::IsNotNull failed. ") + message);
                 }
             }
 
             template <typename T>
-            static void IsNull(const T* pointer, const wstring& message = wstring())
+            static void IsNull(const T* pointer, const String& message = String())
             {
                 if (pointer != nullptr)
                 {
-                    throw message;
+                    throw AssertFailedException(STR("Assert::IsNull failed. ") + message);
                 }
             }
 
             template <typename T>
-            static void IsNotNullPtr(const shared_ptr<T>& pointer, const wstring& message = wstring())
+            static void IsNotNullPtr(const shared_ptr<T>& pointer, const String& message = String())
             {
                 if (pointer == nullptr)
                 {
-                    throw message;
+                    throw AssertFailedException(STR("Assert::IsNotNullPtr failed. ") + message);
                 }
             }
 
             template <typename T>
-            static void IsNullPtr(const shared_ptr<T>& pointer, const wstring& message = wstring())
+            static void IsNullPtr(const shared_ptr<T>& pointer, const String& message = String())
             {
                 if (pointer != nullptr)
                 {
-                    throw message;
+                    throw AssertFailedException(STR("Assert::IsNullPtr failed. ") + message);
                 }
             }
 
             template <typename T>
-            static void AreEqual(const T& expected, const T& actual, const wstring& message = wstring())
+            static void AreEqual(const T& expected, const T& actual, const String& message = String())
             {
                 if (!(expected == actual))
                 {
-                    throw message;
+                    throw AssertFailedException(STR("Assert::AreEqual failed. ") + message);
                 }
             }
 
             template <typename T>
-            static void AreNotEqual(const T& notExpected, const T& actual, const wstring& message = wstring())
+            static void AreNotEqual(const T& notExpected, const T& actual, const String& message = String())
             {
                 if (notExpected == actual)
                 {
-                    throw message;
+                    throw AssertFailedException(STR("Assert::AreNotEqual failed. ") + message);
                 }
             }
 
             template <typename T>
-            static void Fail(const wstring& message = wstring())
+            static void Fail(const String& message = String())
             {
-                throw message;
+                throw AssertFailedException(STR("Assert::Fail failed. ") + message);
             }
         };
     }
