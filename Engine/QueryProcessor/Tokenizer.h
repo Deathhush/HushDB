@@ -35,10 +35,14 @@ namespace HushDB
         String Value;
     };
 
-    struct TokenizerError
+    struct TokenizerException : public Exception
     {
-        SqlToken Position;
-        String Message;
+        TokenizerException(const SqlToken& position, const String& message = String())
+            : Exception(message)
+        {
+            this->Position = position;
+        }
+        SqlToken Position;        
     };
 
     class Tokenizer

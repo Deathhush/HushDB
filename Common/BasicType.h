@@ -40,7 +40,7 @@ namespace Hush
     protected:
         String message;
     public:
-        Exception(const String& message)
+        Exception(const String& message = String())
             :message(message)
         {
         }

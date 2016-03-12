@@ -45,15 +45,9 @@ namespace HushDB
             token.TokenType = SqlTokenType::Unknown;
             token.Row = rowNumber;
             token.Column = tokenBegin - rowBegin + 1;
-            token.Value = value;            
-
-            TokenizerError error =
-            {
-                token,
-                message,
-            };
+            token.Value = value;                        
             
-            throw error;
+            throw TokenizerException(token, message);
         };
 
         while (Char c = *reading)
