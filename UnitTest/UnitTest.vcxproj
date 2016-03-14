@@ -156,6 +156,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnalyzerTests.cpp" />
     <ClCompile Include="ClientTests.cpp" />
     <ClCompile Include="Framework\UnitTest.cpp" />
     <ClCompile Include="Framework\UnitTestTests.cpp" />

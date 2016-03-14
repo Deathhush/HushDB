@@ -12,6 +12,7 @@
     <ClCompile Include="ParserTests.cpp" />
     <ClCompile Include="ClientTests.cpp" />
     <ClCompile Include="MemoryStorageTests.cpp" />
+    <ClCompile Include="AnalyzerTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Framework">

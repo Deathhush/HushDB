@@ -14,11 +14,11 @@ TESTCLASS(MapDataRowTests)
 {
     TESTMETHOD(TestBasic)
     {   
-        MapDataRow::Ptr mapRow = make_shared<MapDataRow>();
+        MemoryDataRow::Ptr mapRow = make_shared<MemoryDataRow>();
         
-        mapRow->Values.insert(pair<String, MapDataRow::ValueType>(STR("id"), make_shared<DbInt>(1)));
-        mapRow->Values.insert(pair<String, MapDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 1"))));
-        mapRow->Values.insert(pair<String, MapDataRow::ValueType>(STR("region"), make_shared<DbInt>(1)));
+        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("id"), make_shared<DbInt>(1)));
+        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 1"))));
+        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("region"), make_shared<DbInt>(1)));
                 
         IDataRow::Ptr row = mapRow;
 
@@ -36,23 +36,23 @@ TESTCLASS(MapDataRowTests)
     }
 };
 
-TESTCLASS(VectorTableTests)
+TESTCLASS(MemoryTableTests)
 {
     TESTMETHOD(TestEnumerateVectorTable)
     {
-        MapDataRow::Ptr mapRow1 = make_shared<MapDataRow>();
+        MemoryDataRow::Ptr mapRow1 = make_shared<MemoryDataRow>();
 
-        mapRow1->Values.insert(pair<String, MapDataRow::ValueType>(STR("id"), make_shared<DbInt>(1)));
-        mapRow1->Values.insert(pair<String, MapDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 1"))));
-        mapRow1->Values.insert(pair<String, MapDataRow::ValueType>(STR("region"), make_shared<DbInt>(10)));
+        mapRow1->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("id"), make_shared<DbInt>(1)));
+        mapRow1->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 1"))));
+        mapRow1->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("region"), make_shared<DbInt>(10)));
 
-        MapDataRow::Ptr mapRow2 = make_shared<MapDataRow>();
+        MemoryDataRow::Ptr mapRow2 = make_shared<MemoryDataRow>();
 
-        mapRow2->Values.insert(pair<String, MapDataRow::ValueType>(STR("id"), make_shared<DbInt>(2)));
-        mapRow2->Values.insert(pair<String, MapDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 2"))));
-        mapRow2->Values.insert(pair<String, MapDataRow::ValueType>(STR("region"), make_shared<DbInt>(20)));
+        mapRow2->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("id"), make_shared<DbInt>(2)));
+        mapRow2->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 2"))));
+        mapRow2->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("region"), make_shared<DbInt>(20)));
 
-        VectorTable table;
+        MemoryTable table;
         table.Data.push_back(mapRow1);
         table.Data.push_back(mapRow2);
 

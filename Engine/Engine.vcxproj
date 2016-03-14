@@ -20,9 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\BasicType.h" />
+    <ClInclude Include="Catalog.h" />
     <ClInclude Include="Client\Client.h" />
+    <ClInclude Include="QueryProcessor\Analyzer.h" />
+    <ClInclude Include="QueryProcessor\LogicalPlan.h" />
     <ClInclude Include="QueryProcessor\Parser.h" />
     <ClInclude Include="QueryProcessor\Tokenizer.h" />
+    <ClInclude Include="Schema.h" />
     <ClInclude Include="StorageEngine\MemoryStorage.h" />
   </ItemGroup>
   <ItemGroup>

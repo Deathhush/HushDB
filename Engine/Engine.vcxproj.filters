@@ -16,6 +16,14 @@
     <ClInclude Include="StorageEngine\MemoryStorage.h">
       <Filter>StorageEngine</Filter>
     </ClInclude>
+    <ClInclude Include="QueryProcessor\LogicalPlan.h">
+      <Filter>QueryProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="Catalog.h" />
+    <ClInclude Include="Schema.h" />
+    <ClInclude Include="QueryProcessor\Analyzer.h">
+      <Filter>QueryProcessor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">

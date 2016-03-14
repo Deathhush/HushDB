@@ -1,5 +1,5 @@
-#ifndef HUSH_PARSER_H
-#define HUSH_PARSER_H
+#ifndef HUSH_MEMORYSTORAGE_H
+#define HUSH_MEMORYSTORAGE_H
 
 #include <map>
 using namespace std;
@@ -8,11 +8,11 @@ using namespace std;
 
 namespace HushDB
 {
-    struct MapDataRow : public IDataRow
+    struct MemoryDataRow : public IDataRow
     {
         typedef shared_ptr<DbValue> ValueType;
         typedef map<String, ValueType> MapType;
-        typedef shared_ptr<MapDataRow> Ptr;
+        typedef shared_ptr<MemoryDataRow> Ptr;
 
         virtual shared_ptr<DbValue> GetValue(const String& columnName) override
         {
@@ -23,14 +23,15 @@ namespace HushDB
         
     };
 
-    struct VectorTable
+    struct MemoryTable
     {
-        typedef vector<MapDataRow::Ptr> TableType;
+        typedef vector<MemoryDataRow::Ptr> TableType;
+        typedef shared_ptr<MemoryTable> Ptr;
 
         class Enumerator : public IDataReader
         {
         public:
-            Enumerator(const VectorTable::TableType::iterator& begin, const VectorTable::TableType::iterator& end)
+            Enumerator(const MemoryTable::TableType::iterator& begin, const MemoryTable::TableType::iterator& end)
             {
                 this->current = begin;
                 this->end = end;
@@ -66,8 +67,8 @@ namespace HushDB
                 throw out_of_range("Reached end");
             }
         private:
-            VectorTable::TableType::iterator current;
-            VectorTable::TableType::iterator end;
+            MemoryTable::TableType::iterator current;
+            MemoryTable::TableType::iterator end;
             bool hasData;
             bool isFirstMove;
         };
@@ -79,7 +80,7 @@ namespace HushDB
         }
 
 
-        vector<MapDataRow::Ptr> Data;
+        vector<MemoryDataRow::Ptr> Data;
     };
 }
 
