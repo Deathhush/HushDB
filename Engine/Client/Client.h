@@ -12,6 +12,7 @@ namespace HushDB
 {
     struct DbValue
     {
+        typedef shared_ptr<DbValue> Ptr;
         DbValue(bool isNull) : IsNull(isNull) {}
         DbValue() : IsNull(true) {}
         bool IsNull;

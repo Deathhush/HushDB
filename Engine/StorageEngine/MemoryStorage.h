@@ -5,22 +5,23 @@
 using namespace std;
 
 #include "..\Client\Client.h"
+#include "..\Schema.h"
 
 namespace HushDB
 {
     struct MemoryDataRow : public IDataRow
     {
-        typedef shared_ptr<DbValue> ValueType;
+        typedef DbValue::Ptr ValueType;
         typedef map<String, ValueType> MapType;
         typedef shared_ptr<MemoryDataRow> Ptr;
 
-        virtual shared_ptr<DbValue> GetValue(const String& columnName) override
+        virtual DbValue::Ptr GetValue(const String& columnName) override
         {
-            return this->Values.at(columnName);
+            return this->Values[this->Schema->GetOrdinal(columnName)];
         }
 
-        MapType Values;
-        
+        vector<DbValue::Ptr> Values;
+        TupleDesc::Ptr Schema;
     };
 
     struct MemoryTable
@@ -31,10 +32,11 @@ namespace HushDB
         class Enumerator : public IDataReader
         {
         public:
-            Enumerator(const MemoryTable::TableType::iterator& begin, const MemoryTable::TableType::iterator& end)
+            Enumerator(const MemoryTable::TableType::iterator& begin, const MemoryTable::TableType::iterator& end, TupleDesc::Ptr schema)
             {
                 this->current = begin;
                 this->end = end;
+                this->schema = schema;
 
                 this->isFirstMove = true;
             }
@@ -55,13 +57,16 @@ namespace HushDB
                     return true;
                 }
                 
+                return false;
             }
 
             virtual IDataRow::Ptr Current() override
             {
                 if (hasData)
                 {
-                    return *current;
+                    auto row = *current;
+                    row->Schema = this->schema;
+                    return row;
                 }
 
                 throw out_of_range("Reached end");
@@ -69,18 +74,20 @@ namespace HushDB
         private:
             MemoryTable::TableType::iterator current;
             MemoryTable::TableType::iterator end;
+            TupleDesc::Ptr schema;
             bool hasData;
             bool isFirstMove;
         };
 
         IDataReader::Ptr OpenScan()
         {
-            Enumerator::Ptr enumerator = make_shared<Enumerator>(this->Rows.begin(), this->Rows.end());
+            Enumerator::Ptr enumerator = make_shared<Enumerator>(this->Rows.begin(), this->Rows.end(), this->Schema);
             return enumerator;
         }
 
 
         vector<MemoryDataRow::Ptr> Rows;
+        TupleDesc::Ptr Schema;
     };
 }
 

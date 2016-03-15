@@ -8,6 +8,7 @@ using namespace Hush::UnitTest;
 
 #include "..\Engine\Client\Client.h"
 #include "..\Engine\StorageEngine\MemoryStorage.h"
+#include "..\Engine\Schema.h"
 using namespace HushDB;
 
 #include "TestUtility.h"
@@ -17,10 +18,15 @@ TESTCLASS(MapDataRowTests)
     TESTMETHOD(TestBasic)
     {   
         MemoryDataRow::Ptr mapRow = make_shared<MemoryDataRow>();
+
+        mapRow->Schema = make_shared<TupleDesc>();
+        mapRow->Schema->AddColumn(T("id"), SqlType::Int);
+        mapRow->Schema->AddColumn(T("data"), SqlType::String);
+        mapRow->Schema->AddColumn(T("region"), SqlType::Int);
         
-        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("id"), make_shared<DbInt>(1)));
-        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 1"))));
-        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("region"), make_shared<DbInt>(1)));
+        mapRow->Values.push_back(make_shared<DbInt>(1));
+        mapRow->Values.push_back(make_shared<DbString>(STR("test data 1")));
+        mapRow->Values.push_back(make_shared<DbInt>(10));
                 
         IDataRow::Ptr row = mapRow;
 
@@ -33,7 +39,7 @@ TESTCLASS(MapDataRowTests)
         Assert::IsFalse(c2->IsNull);
 
         DbInt::Ptr c3 = row->GetValue<DbInt>(STR("region"));
-        Assert::AreEqual(1, c3->Value);
+        Assert::AreEqual(10, c3->Value);
         Assert::IsFalse(c3->IsNull);        
     }
 };
@@ -43,6 +49,7 @@ TESTCLASS(MemoryTableTests)
     TESTMETHOD(TestEnumerateVectorTable)
     {
         MemoryTable::Ptr table = TestUtility::CreateMemoryTable();
+
 
         IDataReader::Ptr reader = table->OpenScan();
 

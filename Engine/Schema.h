@@ -27,6 +27,7 @@ namespace HushDB
     class TupleDesc
     {
     public:
+        typedef shared_ptr<TupleDesc> Ptr;
         void AddColumn(const ColumnDesc& column)
         {
             ColumnDesc::Ptr columnPtr = make_shared<ColumnDesc>(column);
