@@ -44,7 +44,7 @@ namespace HushDB
                 throw AnalyzerException(STR("Table [") + *(fromClause->TableName) + STR("] does not exist."));
             }
 
-            plan->AddScan(LogicalScan{ fromClause->TableName });
+            plan->AddScan(LogicalScan{ tableDef });
 
             // Process SelectList
             TargetList::Ptr targetList = query->TargetList;

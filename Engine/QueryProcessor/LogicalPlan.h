@@ -6,13 +6,14 @@
 using namespace std;
 
 #include "Tokenizer.h"
+#include "..\Catalog.h"
 using namespace Hush;
 
 namespace HushDB
 {
     struct LogicalScan
     {
-        StringPtr TableName;
+        TableDef::Ptr TableDef;
     };
 
     struct LogicalSelectItem

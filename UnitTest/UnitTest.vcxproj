@@ -162,7 +162,9 @@
     <ClCompile Include="Framework\UnitTestTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MemoryStorageTests.cpp" />
+    <ClCompile Include="OptimizerTests.cpp" />
     <ClCompile Include="ParserTests.cpp" />
+    <ClCompile Include="QueryExecutionTests.cpp" />
     <ClCompile Include="TokenizerTests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\UnitTest.h" />
+    <ClInclude Include="TestUtility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

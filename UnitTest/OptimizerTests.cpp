@@ -5,12 +5,13 @@ using namespace std;
 using namespace Hush;
 using namespace Hush::UnitTest;
 
+#include "..\Engine\QueryProcessor\Optimizer.h"
 #include "..\Engine\QueryProcessor\Analyzer.h"
 using namespace HushDB;
 
-TESTCLASS(AnalyzerTests)
+TESTCLASS(OptimizerTests)
 {
-    TESTMETHOD(TestBasic)
+    TESTMETHOD(TestOptimizeBasicQuery)
     {
         TableDef tableDef;
         tableDef.Name = T("t1");
@@ -28,5 +29,11 @@ TESTCLASS(AnalyzerTests)
 
         Analyzer analyzer(catalog);
         LogicalPlan::Ptr plan = analyzer.Analyze(selectStmt);
+
+        Optimizer o;
+        IExecutionPlanNode::Ptr executionPlan = o.Optimize(plan);
+
+        Assert::IsNotNullPtr(executionPlan);
+
     }
 };

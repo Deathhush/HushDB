@@ -24,6 +24,15 @@
     <ClInclude Include="QueryProcessor\Analyzer.h">
       <Filter>QueryProcessor</Filter>
     </ClInclude>
+    <ClInclude Include="QueryProcessor\ExecutionPlan.h">
+      <Filter>QueryProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryProcessor\Optimizer.h">
+      <Filter>QueryProcessor</Filter>
+    </ClInclude>
+    <ClInclude Include="Client\SqlCommand.h">
+      <Filter>Client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">

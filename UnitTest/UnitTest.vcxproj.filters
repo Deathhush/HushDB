@@ -13,6 +13,8 @@
     <ClCompile Include="ClientTests.cpp" />
     <ClCompile Include="MemoryStorageTests.cpp" />
     <ClCompile Include="AnalyzerTests.cpp" />
+    <ClCompile Include="OptimizerTests.cpp" />
+    <ClCompile Include="QueryExecutionTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Framework">
@@ -23,5 +25,6 @@
     <ClInclude Include="Framework\UnitTest.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="TestUtility.h" />
   </ItemGroup>
 </Project>

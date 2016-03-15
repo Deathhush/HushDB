@@ -30,8 +30,8 @@ namespace HushDB
         void AddColumn(const ColumnDesc& column)
         {
             ColumnDesc::Ptr columnPtr = make_shared<ColumnDesc>(column);
-            this->columnList.push_back(columnPtr);
-            this->columnMap[column.Name] = columnPtr;
+            this->ColumnList.push_back(columnPtr);
+            this->columnMap[column.Name] = this->ColumnList.size() - 1;
         }
 
         void AddColumn(const String& columnName, const SqlType& columnType)
@@ -44,9 +44,16 @@ namespace HushDB
             return this->columnMap.find(columnName) != this->columnMap.end();
         }
 
-    private:
-        vector<ColumnDesc::Ptr> columnList;
-        map<String, ColumnDesc::Ptr> columnMap;
+        int GetOrdinal(const String& columnName)
+        {
+            return this->columnMap.at(columnName);
+        }
+
+    public:
+        vector<ColumnDesc::Ptr> ColumnList;
+
+    private:        
+        map<String, int> columnMap;
     };
 }
 

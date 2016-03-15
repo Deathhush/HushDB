@@ -75,12 +75,12 @@ namespace HushDB
 
         IDataReader::Ptr OpenScan()
         {
-            Enumerator::Ptr enumerator = make_shared<Enumerator>(this->Data.begin(), this->Data.end());
+            Enumerator::Ptr enumerator = make_shared<Enumerator>(this->Rows.begin(), this->Rows.end());
             return enumerator;
         }
 
 
-        vector<MemoryDataRow::Ptr> Data;
+        vector<MemoryDataRow::Ptr> Rows;
     };
 }
 

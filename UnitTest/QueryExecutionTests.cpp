@@ -8,43 +8,31 @@ using namespace Hush::UnitTest;
 
 #include "..\Engine\Client\Client.h"
 #include "..\Engine\StorageEngine\MemoryStorage.h"
+#include "..\Engine\Client\SqlCommand.h"
 using namespace HushDB;
 
 #include "TestUtility.h"
 
-TESTCLASS(MapDataRowTests)
+TESTCLASS(QueryExecutionTests)
 {
-    TESTMETHOD(TestBasic)
-    {   
-        MemoryDataRow::Ptr mapRow = make_shared<MemoryDataRow>();
-        
-        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("id"), make_shared<DbInt>(1)));
-        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("data"), make_shared<DbString>(STR("test data 1"))));
-        mapRow->Values.insert(pair<String, MemoryDataRow::ValueType>(STR("region"), make_shared<DbInt>(1)));
-                
-        IDataRow::Ptr row = mapRow;
-
-        DbInt::Ptr c1 = row->GetValue<DbInt>(STR("id"));
-        Assert::AreEqual(1, c1->Value);
-        Assert::IsFalse(c1->IsNull);
-
-        DbString::Ptr c2 = row->GetValue<DbString>(STR("data"));
-        Assert::AreEqual(STR("test data 1"), c2->Value);
-        Assert::IsFalse(c2->IsNull);
-
-        DbInt::Ptr c3 = row->GetValue<DbInt>(STR("region"));
-        Assert::AreEqual(1, c3->Value);
-        Assert::IsFalse(c3->IsNull);        
-    }
-};
-
-TESTCLASS(MemoryTableTests)
-{
-    TESTMETHOD(TestEnumerateVectorTable)
+    TESTMETHOD(TestQueryMemoryTable)
     {
         MemoryTable::Ptr table = TestUtility::CreateMemoryTable();
 
-        IDataReader::Ptr reader = table->OpenScan();
+        Catalog::Ptr catalog = make_shared<Catalog>();
+
+        TableDef tableDef;
+        tableDef.Name = T("t1");
+        tableDef.Schema.AddColumn(T("id"), SqlType::Int);
+        tableDef.Schema.AddColumn(T("data"), SqlType::String);
+        tableDef.Schema.AddColumn(T("region"), SqlType::Int);
+        tableDef.Table = table;
+
+        catalog->AddTable(tableDef);
+
+        SqlCommand command(catalog);
+        command.CommandText = T("select id, data, region from t1");
+        IDataReader::Ptr reader = command.ExecuteReader();
 
         Assert::IsTrue(reader->MoveNext());
 
@@ -77,7 +65,9 @@ TESTCLASS(MemoryTableTests)
         c3 = row2->GetValue<DbInt>(STR("region"));
         Assert::AreEqual(20, c3->Value);
         Assert::IsFalse(c3->IsNull);
-        
+
         Assert::IsFalse(reader->MoveNext());
     }
 };
+
+
