@@ -224,6 +224,120 @@ namespace Hush
             }
         };
 
+        template<typename T>
+        struct EqualAssertion
+        {
+            static bool AreEqual(const T& expected, const T& actual, const String& message = String())
+            {
+                if (!(expected == actual))
+                {
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ")
+                            + STR("Expected:<") + Convert<T>::ToString(expected) + STR(">. Actual:<") + Convert<T>::ToString(actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreEqual failed. ") + message);
+                    }
+                }
+            }
+
+            static void AreNotEqual(const T& notExpected, const T& actual, const String& message = String())
+            {
+                if (notExpected == actual)
+                {
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ")
+                            + STR("Expected any value except:<") + Convert<T>::ToString(notExpected) + STR(">. Actual:<") + Convert<T>::ToString(actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreNotEqual failed. ") + message);
+                    }
+                }
+            }
+        };
+
+        template<typename T>
+        struct EqualAssertion<T*>
+        {
+            static bool AreEqual(const T* expected, const T* actual, const String& message = String())
+            {
+                if (!(*expected == *actual))
+                {
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ")
+                            + STR("Expected:<") + Convert<T>::ToString(*expected) + STR(">. Actual:<") + Convert<T>::ToString(*actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreEqual failed. ") + message);
+                    }
+                }
+            }
+
+            static void AreNotEqual(const T* notExpected, const T* actual, const String& message = String())
+            {
+                if (*notExpected == *actual)
+                {
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ")
+                            + STR("Expected any value except:<") + Convert<T>::ToString(*notExpected) + STR(">. Actual:<") + Convert<T>::ToString(*actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreNotEqual failed. ") + message);
+                    }
+                }
+            }
+        };
+
+        template<typename T>
+        struct EqualAssertion<shared_ptr<T>>
+        {
+            static bool AreEqual(shared_ptr<T> expected, shared_ptr<T> actual, const String& message = String())
+            {
+                if (!(*expected == *actual))
+                {
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ")
+                            + STR("Expected:<") + Convert<T>::ToString(*expected) + STR(">. Actual:<") + Convert<T>::ToString(*actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreEqual failed. ") + message);
+                    }
+                }
+            }
+
+            static void AreNotEqual(shared_ptr<T> notExpected, shared_ptr<T> actual, const String& message = String())
+            {
+                if (*notExpected == *actual)
+                {
+                    if (ToStringTrait<T>::Supported)
+                    {
+                        throw AssertFailedException(
+                            STR("Assert::AreEqual failed. ")
+                            + STR("Expected any value except:<") + Convert<T>::ToString(*notExpected) + STR(">. Actual:<") + Convert<T>::ToString(*actual) + STR(">. ") + message);
+                    }
+                    else
+                    {
+                        throw AssertFailedException(STR("Assert::AreNotEqual failed. ") + message);
+                    }
+                }
+            }
+        };
+
         class Assert
         {
         public:
@@ -282,37 +396,13 @@ namespace Hush
             template <typename T>
             static void AreEqual(const T& expected, const T& actual, const String& message = String())
             {
-                if (!(expected == actual))
-                {
-                    if (ToStringTrait<T>::Supported)
-                    {
-                        throw AssertFailedException(
-                            STR("Assert::AreEqual failed. ") 
-                            + STR("Expected:<") + Convert<T>::ToString(expected) + STR(">. Actual:<") + Convert<T>::ToString(actual) + STR(">. ") + message);
-                    }
-                    else
-                    {
-                        throw AssertFailedException(STR("Assert::AreEqual failed. ") + message);
-                    }
-                }
+                EqualAssertion<T>::AreEqual(expected, actual, message);
             }
 
             template <typename T>
             static void AreNotEqual(const T& notExpected, const T& actual, const String& message = String())
             {
-                if (notExpected == actual)
-                {
-                    if (ToStringTrait<T>::Supported)
-                    {
-                        throw AssertFailedException(
-                            STR("Assert::AreEqual failed. ")
-                            + STR("Expected any value except:<") + Convert<T>::ToString(notExpected) + STR(">. Actual:<") + Convert<T>::ToString(actual) + STR(">. ") + message);
-                    }
-                    else
-                    {
-                        throw AssertFailedException(STR("Assert::AreNotEqual failed. ") + message);
-                    }
-                }
+                EqualAssertion<T>::AreNotEqual(notExpected, actual, message);
             }
 
             template <typename T>
