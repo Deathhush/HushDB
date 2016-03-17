@@ -40,6 +40,11 @@ namespace HushDB
             return (this->offset == slot.offset && this->length == slot.length);
         }
 
+        bool operator!=(const SlotInfo& slot) const
+        {
+            return !this->operator==(slot);
+        }
+
         Int16 offset; // offset within a page
         Int16 length; // length of a row
     };
