@@ -31,10 +31,12 @@
     <ClInclude Include="QueryProcessor\Tokenizer.h" />
     <ClInclude Include="Schema.h" />
     <ClInclude Include="StorageEngine\MemoryStorage.h" />
+    <ClInclude Include="StorageEngine\Page.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Parser.cpp" />
     <ClCompile Include="QueryProcessor\Tokenizer.cpp" />
+    <ClCompile Include="StorageEngine\Page.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="QueryProcessor\SqlSamples.txt" />
