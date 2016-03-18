@@ -12,8 +12,11 @@ using namespace HushDB;
 template <typename T>
 inline void AssertRowPtr(const T& value, const RowPtr& rowPtr, const wstring& message)
 {
-    Assert::AreEqual<Int32>(sizeof(T), rowPtr.length, message + L"(Size)");
-    Assert::AreEqual<T>(value, *((T*)(rowPtr.data)), message + L"(Data)");
+    Int32 length = rowPtr.length;
+    T testvalue = *((T*)(rowPtr.data));
+
+    Assert::AreEqual<Int32>(sizeof(T), length, message + L"(Size)");
+    Assert::AreEqual<T>(value, testvalue, message + L"(Data)");
 }
 
 TESTCLASS(PageTests)
@@ -166,5 +169,32 @@ public:
         AssertRowPtr(row4, rowPtr4, L"Row4 is not correct after deletion.");
 
         Assert::AreEqual(rowId2.slotId, rowId4.slotId, L"SlotId is not reused after row deletion.");
+    }
+
+    TESTMETHOD(TestIteration)
+    {
+        DataPage page(1);
+        Int32 row1 = 1;
+        Int32 row2 = 2;
+        Int64 row3 = 3;
+
+        RowId rowId1 = page.InsertRowValue(row1);
+        RowId rowId2 = page.InsertRowValue(row2);
+        RowId rowId3 = page.InsertRowValue(row3);
+
+        IEnumerator<RowPtr>::Ptr enumerator = page.GetEnumerator();
+        Assert::IsTrue(enumerator->MoveNext());
+
+        AssertRowPtr(row1, enumerator->Current(), L"The data is not correctly set for row1.");
+
+        Assert::IsTrue(enumerator->MoveNext());
+        AssertRowPtr(row2, enumerator->Current(), L"The data is not correctly set for row2.");
+
+        Assert::IsTrue(enumerator->MoveNext());
+        AssertRowPtr(row3, enumerator->Current(), L"The data is not correctly set for row3.");
+
+        Assert::IsFalse(enumerator->MoveNext());
+        Assert::IsFalse(enumerator->MoveNext());       
+
     }
 };

@@ -61,14 +61,7 @@ namespace HushDB
         virtual ~IDataRow() {}
     };
         
-    struct IDataReader
-    {
-        typedef shared_ptr<IDataReader> Ptr;
-
-        virtual bool MoveNext() = 0;
-        virtual IDataRow::Ptr Current() = 0;
-        virtual ~IDataReader() {}
-    };    
+    typedef public IEnumerator<IDataRow::Ptr> IDataReader;
 }
 
 

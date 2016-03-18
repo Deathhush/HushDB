@@ -214,6 +214,60 @@ namespace HushDB
         void SetNextPageId(PageId nextPage) { this->nextPage = nextPage; }
         PageId GetNextPageId() { return this->nextPage; }
 
+        class Enumerator : public IEnumerator<RowPtr>
+        {
+        public:
+            typedef shared_ptr<Enumerator> Ptr;
+
+            Enumerator(DataPageImpl<TData>* page)
+                : page(page), currentSlotId(InvalidSlotId)
+            {}
+
+            virtual bool MoveNext() override
+            {
+                if (this->currentSlotId == EndOfSlot)
+                {
+                    return false;
+                }
+
+                this->currentSlotId--;
+                for (; this->currentSlotId >= this->page->maxSlotId; this->currentSlotId--)
+                {
+                    if (this->page->slots[this->currentSlotId] != SlotInfo::EmptySlot)
+                    {
+                        return true;
+                    }
+                }
+
+                this->currentSlotId = EndOfSlot;
+                return false;               
+            }
+
+            virtual const RowPtr& Current() override
+            {
+                if (this->currentSlotId == InvalidSlotId)
+                {
+                    throw InvalidOperationException(T("Current called before MoveNext."));
+                }
+
+                if (this->currentSlotId == EndOfSlot)
+                {
+                    throw OutOfRangeException(T("Reached the end."));
+                }
+
+                return RowPtr(&(this->page->data[this->page->slots[this->currentSlotId].offset]), this->page->slots[this->currentSlotId].length);
+            }
+
+        private:
+            DataPageImpl<TData>* page;
+            SlotId currentSlotId;
+        };
+
+        IEnumerator<RowPtr>::Ptr GetEnumerator()
+        {
+            return make_shared<Enumerator>(this);
+        }
+
     protected:
         RowId AllocateRow(Int32 length)
         {

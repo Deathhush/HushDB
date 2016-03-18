@@ -18,7 +18,7 @@ using namespace std;
 
 namespace Hush
 {
-    typedef unsigned char Byte;
+    typedef char Byte;
 
     typedef __int16 Int16;
     typedef __int32 Int32;
@@ -35,6 +35,36 @@ namespace Hush
     #define T(X) L ## X
     #define STR(X) String(L ## X)
 
+    template<typename T>
+    struct IEnumerator
+    {
+        typedef shared_ptr<IEnumerator<T>> Ptr;
+
+        virtual bool MoveNext() = 0;
+        virtual const T& Current() = 0;
+        virtual ~IEnumerator() {}
+    };
+
+    template<typename T>
+    struct IEnumerator<T*>
+    {
+        typedef shared_ptr<IEnumerator<T*>> Ptr;
+
+        virtual bool MoveNext() = 0;
+        virtual T* Current() = 0;
+        virtual ~IEnumerator() {}
+    };
+
+    template<typename T>
+    struct IEnumerator<shared_ptr<T>>
+    {
+        typedef shared_ptr<IEnumerator<shared_ptr<T>>> Ptr;
+
+        virtual bool MoveNext() = 0;
+        virtual shared_ptr<T> Current() = 0;
+        virtual ~IEnumerator() {}
+    };
+
     class Exception
     {
     protected:
@@ -48,6 +78,24 @@ namespace Hush
         const String& GetMessage() const
         {
             return message;
+        }
+    };
+
+    class OutOfRangeException : public Exception
+    {
+    public:
+        OutOfRangeException(const String& message = String())
+            :Exception(message)
+        {
+        }
+    };
+
+    class InvalidOperationException : public Exception
+    {
+    public:
+        InvalidOperationException(const String& message = String())
+            :Exception(message)
+        {
         }
     };
 

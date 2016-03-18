@@ -69,7 +69,7 @@ namespace HushDB
                     return row;
                 }
 
-                throw out_of_range("Reached end");
+                throw OutOfRangeException(T("Reached end"));
             }
         private:
             MemoryTable::TableType::iterator current;
