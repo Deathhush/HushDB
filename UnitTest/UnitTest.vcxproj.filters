@@ -16,6 +16,7 @@
     <ClCompile Include="OptimizerTests.cpp" />
     <ClCompile Include="QueryExecutionTests.cpp" />
     <ClCompile Include="PageTests.cpp" />
+    <ClCompile Include="DataRowTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Framework">

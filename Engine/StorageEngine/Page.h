@@ -1,9 +1,13 @@
 #ifndef HUSHDB_PAGE_H
 #define HUSHDB_PAGE_H
 
+#include <algorithm>
+using namespace std;
+
 #include <memory.h>
 
 #include "..\..\Common\BasicType.h"
+#include "..\Client\Client.h"
 using namespace Hush;
 
 namespace HushDB
@@ -301,6 +305,17 @@ namespace HushDB
         IEnumerator<RowPtr>::Ptr GetEnumerator()
         {
             return make_shared<Enumerator>(this);
+        }
+
+        RowPtr InsertDataRow(const vector<DbValue::Ptr>& fields)
+        {
+            int totalSize = 0;
+            for_each(fields.begin(), fields.end(), [&](DbValue::Ptr v) { totalSize += v->Size(); });
+            RowPtr rowPtr = this->GetRowPtr(this->InsertEmptyRow(totalSize));
+
+            DataRow::CopyDataRow(rowPtr.data, fields);  
+
+            return rowPtr;
         }
         
     };

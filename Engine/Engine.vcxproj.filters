@@ -36,6 +36,9 @@
     <ClInclude Include="StorageEngine\Page.h">
       <Filter>StorageEngine</Filter>
     </ClInclude>
+    <ClInclude Include="StorageEngine\DataRow.h">
+      <Filter>StorageEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">

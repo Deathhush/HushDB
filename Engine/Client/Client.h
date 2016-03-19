@@ -17,6 +17,9 @@ namespace HushDB
         DbValue() : IsNull(true) {}
         bool IsNull;
 
+        virtual Int32 Size() = 0;
+        virtual const Byte* Data() = 0;
+
         virtual ~DbValue() {};
     };
 
@@ -26,6 +29,17 @@ namespace HushDB
 
         DbInt() : Value(0), DbValue(true) {}
         DbInt(const Int32& value) : Value(value), DbValue(false) {}
+
+        virtual Int32 Size() override
+        {
+            return sizeof(Int32);
+        }
+
+        virtual const Byte* Data() override
+        {
+            return (Byte*)&(this->Value);
+        }
+
         Int32 Value;
     };
 
@@ -35,6 +49,17 @@ namespace HushDB
 
         DbFloat() : Value(0.0), DbValue(true) {}
         DbFloat(const float& value) : Value(value), DbValue(false) {}
+
+        virtual Int32 Size() override
+        {
+            return sizeof(float);
+        }
+
+        virtual const Byte* Data() override
+        {
+            return (Byte*)&(this->Value);
+        }
+
         float Value;
     };
 
@@ -44,6 +69,17 @@ namespace HushDB
 
         DbString() : DbValue(true) {}
         DbString(const String& value) : Value(value), DbValue(false) {}
+
+        virtual Int32 Size() override
+        {
+            return this->Value.length()*sizeof(Char);
+        }
+
+        virtual const Byte* Data() override
+        {
+            return (Byte*)this->Value.data();
+        }
+
         String Value;
     };
 

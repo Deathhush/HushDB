@@ -2,6 +2,7 @@
 #define HUSH_SCHEMA_H
 
 #include <vector>
+#include <map>
 using namespace std;
 
 #include "..\Common\BasicType.h"
