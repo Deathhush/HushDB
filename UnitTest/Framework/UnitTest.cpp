@@ -27,7 +27,7 @@ namespace Hush
 
         void TestRunner::RunTests()
         {
-            bool allTestPassed = true;
+            bool allTestPassed = false;
             try
             {
                 TestClassInfo* info = TestRunner::headTestClassInfo;
@@ -36,14 +36,23 @@ namespace Hush
                     info->RunTests();                    
                     info = info->next;
                 }
+                allTestPassed = true;
             }
             catch (AssertFailedException& e)
             {
-                wcout << e.GetMessage() << endl;
-                allTestPassed = false;
+                wcout <<  e.GetMessage() << endl;                
+            }
+            catch (Exception& Ex)
+            {
+                wcout << L"Unhandled Exception caught. Exception message:" << Ex.GetMessage() << endl;
+            }
+            catch (exception& ex)
+            {
+                cout << "std::exception caught. exception message:" << ex.what() << endl;
             }
             catch(...)
             {
+                
                 wcout << L"Unhandled exception caught. Test failed." << endl;
             }
 
