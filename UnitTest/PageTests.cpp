@@ -171,6 +171,31 @@ public:
         Assert::AreEqual(rowId2.slotId, rowId4.slotId, L"SlotId is not reused after row deletion.");
     }
 
+    TESTMETHOD(TestAvailableSpace)
+    {
+        DataPage page(1);
+        Int32 row1 = 1;
+        RowId rowId1 = page.InsertRowValue(row1);
+
+        Assert::AreEqual<UInt16>(DataPage::DataRegionSize - 4 - sizeof(SlotInfo), page.GetAvailableSpace(), L"The available space is not correct.");
+        Int64 row2 = 2;
+        page.InsertRowValue(row2);
+
+        Assert::AreEqual<UInt16>(DataPage::DataRegionSize - 12 - 2 * sizeof(SlotInfo), page.GetAvailableSpace(), L"The available space is not correct after inserted two rows.");
+    }
+
+    TESTMETHOD(TestInsertWithoutData)
+    {
+        DataPage page(1);
+        Int32 row1 = 1;
+        RowId rowId1 = page.InsertEmptyRow(sizeof(Int32));
+
+        RowPtr rowPtr1 = page.GetRowPtr(rowId1);
+        *((Int32*)rowPtr1.data) = row1;
+
+        AssertRowPtr(row1, page.GetRowPtr(rowId1), L"The data is not correctly set.");
+    }
+
     TESTMETHOD(TestIteration)
     {
         DataPage page(1);

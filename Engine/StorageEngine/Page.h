@@ -138,10 +138,45 @@ namespace HushDB
         // When inserting new row, the needed space is length of data + length of a SlotInfo
         UInt16 GetAvailableSpace() const { return DataRegionSize - freeSpaceOffset - ((-this->maxSlotId) + 1)*sizeof(SlotInfo); }
 
+        RowId InsertEmptyRow(Int32 length)
+        {
+            SlotId slotId = InvalidSlotId;
+            // Try to find an empty slot id
+            for (int i = 0; i >= this->maxSlotId; i--)
+            {
+                if (slots[i] == SlotInfo::EmptySlot)
+                {
+                    slotId = i;
+                    break;
+                }
+            }
+
+            if (slotId == InvalidSlotId)
+            {
+                this->maxSlotId--;
+                slotId = this->maxSlotId;
+            }
+
+            this->slotCount++;
+
+            this->slots[slotId].length = length;
+            this->slots[slotId].offset = freeSpaceOffset;
+
+            this->freeSpaceOffset += length;
+
+            if (slotId < this->maxSlotId)
+            {
+                this->maxSlotId = slotId;
+            }
+
+            return RowId(this->pageId, slotId);
+
+        }
+
         //TODO: Need to handle not enough free space scenario
         RowId InsertRowPtr(const RowPtr& rowPtr)
         {
-            RowId rowId = AllocateRow(rowPtr.length);
+            RowId rowId = InsertEmptyRow(rowPtr.length);
             memcpy((void*)&this->data[slots[rowId.slotId].offset], rowPtr.data, rowPtr.length);
 
             return rowId;
@@ -267,42 +302,7 @@ namespace HushDB
         {
             return make_shared<Enumerator>(this);
         }
-
-    protected:
-        RowId AllocateRow(Int32 length)
-        {
-            SlotId slotId = InvalidSlotId;
-            // Try to find an empty slot id
-            for (int i = 0; i >= this->maxSlotId; i--)
-            {
-                if (slots[i] == SlotInfo::EmptySlot)
-                {
-                    slotId = i;
-                    break;
-                }
-            }
-
-            if (slotId == InvalidSlotId)
-            {
-                this->maxSlotId--;
-                slotId = this->maxSlotId;
-            }
-
-            this->slotCount++;
-
-            this->slots[slotId].length = length;
-            this->slots[slotId].offset = freeSpaceOffset;
-
-            this->freeSpaceOffset += length;
-
-            if (slotId < this->maxSlotId)
-            {
-                this->maxSlotId = slotId;
-            }
-
-            return RowId(this->pageId, slotId);
-
-        }
+        
     };
 
     // Stores rows on the page. One row for a slot.
