@@ -70,14 +70,35 @@ namespace HushDB
 
             switch (columnDesc->Type)
             {
-            case SqlType::Int:
-                return make_shared<DbInt>(*(Int32*)fieldData);
+            case SqlType::Int:                
+                if (fieldOffset == DataRow::NullOffset)
+                {
+                    return make_shared<DbInt>();
+                }
+                else
+                {
+                    return make_shared<DbInt>(*(Int32*)fieldData);
+                }                
                 break;
             case SqlType::Float:
-                return make_shared<DbFloat>(*(Int32*)fieldData);
+                if (fieldOffset == DataRow::NullOffset)
+                {
+                    return make_shared<DbFloat>();
+                }
+                else
+                {
+                    return make_shared<DbFloat>(*(float*)fieldData);
+                }
                 break;
             case SqlType::String:
-                return make_shared<DbString>(String((Char*)fieldData, fieldSize/sizeof(Char)));
+                if (fieldOffset == DataRow::NullOffset)
+                {
+                    return make_shared<DbString>();
+                }
+                else
+                {
+                    return make_shared<DbString>(String((Char*)fieldData, fieldSize / sizeof(Char)));
+                }
                 break;
             }
         }
