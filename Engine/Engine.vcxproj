@@ -33,6 +33,7 @@
     <ClInclude Include="StorageEngine\DataRow.h" />
     <ClInclude Include="StorageEngine\MemoryStorage.h" />
     <ClInclude Include="StorageEngine\Page.h" />
+    <ClInclude Include="StorageEngine\PageFile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Parser.cpp" />

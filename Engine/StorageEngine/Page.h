@@ -123,6 +123,17 @@ namespace HushDB
 
         PageId GetPageId() const { return pageId; }
         void SetPageId(PageId pageId) { this->pageId = pageId; }
+
+        bool operator==(const PageImpl& page) const
+        {
+            const PageImpl* pagePtr = &page;
+            return memcmp((Byte*)this, (Byte*)pagePtr, PageSize) == 0;
+        }
+
+        bool operator!=(const PageImpl& page) const
+        {
+            return !this->operator==(page);
+        }
     };
 
     typedef PageImpl<PageData> Page;    
@@ -317,7 +328,16 @@ namespace HushDB
 
             return rowPtr;
         }
-        
+
+        //bool operator==(DataPageImpl& page) const
+        //{
+        //    return memcmp((Byte*)&this, (Byte*)&page, PageSize) == 0;
+        //}
+
+        //bool operator!=(DataPageImpl& page) const
+        //{
+        //    return !this->operator==(page);
+        //}
     };
 
     // Stores rows on the page. One row for a slot.

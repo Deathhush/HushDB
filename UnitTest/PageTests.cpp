@@ -84,6 +84,26 @@ public:
         AssertRowPtr(row3, rowPtr3, L"Row3 is not correct.");
     }
 
+    TESTMETHOD(TestPageEqual)
+    {
+        DataPage page(1);
+        Int16 row1 = 1;
+        Int32 row2 = 2;
+        Int64 row3 = 3;
+
+        page.InsertRowValue(row1);
+        page.InsertRowValue(row2);
+        page.InsertRowValue(row3);
+
+        DataPage page1(1);
+        page1.InsertRowValue(row1);
+        page1.InsertRowValue(row2);
+        page1.InsertRowValue(row3);
+
+        Assert::AreEqual(page, page1);
+    }
+
+
     TESTMETHOD(TestDeleteRow)
     {
         DataPage page(1);
