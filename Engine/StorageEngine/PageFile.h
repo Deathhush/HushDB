@@ -29,9 +29,23 @@ namespace HushDB
         void Open()
         {
             FILE* f = _wfopen(fileName.c_str(), L"a");
-            fclose(f);
+            fclose(f);   
 
-            file = _wfopen(fileName.c_str(), L"r+b");            
+            file = _wfopen(fileName.c_str(), L"r+b");
+            nextPageId = this->Size() / PageSize;
+        }
+
+        UInt32 Size()
+        {
+            int fileNo = _fileno(file);
+            struct stat st;
+            fstat(fileNo, &st);
+            return st.st_size;
+        }
+
+        UInt32 PageCount()
+        {
+            return this->Size() / PageSize;
         }
 
         void Flush()
@@ -49,7 +63,8 @@ namespace HushDB
         void AppendPage(TPage* page)
         {
             UInt32 pageSize = sizeof(TPage);
-            PageId pageId = page->GetPageId();
+            page->SetPageId(nextPageId);
+            nextPageId++;
             fseek(file, 0, SEEK_END);            
             fwrite((Byte*)page, sizeof(Byte), pageSize, file);
         }
@@ -80,6 +95,7 @@ namespace HushDB
     private:
         FILE* file;
         String fileName;
+        PageId nextPageId;
     };
 }
 
