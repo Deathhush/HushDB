@@ -328,16 +328,6 @@ namespace HushDB
 
             return rowPtr;
         }
-
-        //bool operator==(DataPageImpl& page) const
-        //{
-        //    return memcmp((Byte*)&this, (Byte*)&page, PageSize) == 0;
-        //}
-
-        //bool operator!=(DataPageImpl& page) const
-        //{
-        //    return !this->operator==(page);
-        //}
     };
 
     // Stores rows on the page. One row for a slot.

@@ -54,33 +54,35 @@ namespace HushDB
             : bufferManager(bufferManager)
         {
             SimpleHeapHeaderPage* headerPage = bufferManager->AllocatePage<SimpleHeapHeaderPage>();
-            DataPage* dataPage = bufferManager->AllocatePage<DataPage>();
-            dataPage->SetNextPageId(EndOfPage);
-            headerPage->FirstDataPageId = dataPage->GetPageId();
-            headerPage->LastDataPageId = dataPage->GetPageId();
-
             this->headerPageId = headerPage->GetPageId();
+
+            DataPage* newDataPage = AllocateNewDataPage(headerPage);
+            headerPage->FirstDataPageId = newDataPage->GetPageId();            
+
+            bufferManager->ReleasePage(headerPage->GetPageId());
+            bufferManager->ReleasePage(newDataPage->GetPageId());
         }
 
         PageId GetHeaderPageId() { return this->headerPageId; }
 
         RowId InsertRowPtr(const RowPtr& rowPtr)
-        {
-            SimpleHeapHeaderPage* headerPage = bufferManager->GetPageAs<SimpleHeapHeaderPage>(headerPageId);
-            DataPage* currentPage = bufferManager->GetPageAs<DataPage>(headerPage->LastDataPageId);
+        {            
+            DataPage* currentPage = bufferManager->GetPageAs<DataPage>(currentPageId);
 
             if (currentPage->GetAvailableSpace() < rowPtr.length)
             {
+                SimpleHeapHeaderPage* headerPage = bufferManager->GetPageAs<SimpleHeapHeaderPage>(headerPageId);
 
-                DataPage* newDataPage = this->bufferManager->AllocatePage<DataPage>();
-                newDataPage->SetNextPageId(EndOfPage);
-                currentPage->SetNextPageId(newDataPage->GetPageId());
-                headerPage->LastDataPageId = newDataPage->GetPageId();
-
+                DataPage* newDataPage = AllocateNewDataPage(headerPage);
                 currentPage = newDataPage;
+
+                bufferManager->ReleasePage(headerPage->GetPageId());
             }
 
-            return currentPage->InsertRowPtr(rowPtr);
+            RowId result = currentPage->InsertRowPtr(rowPtr);            
+            bufferManager->ReleasePage(currentPage->GetPageId());
+
+            return result;
         }
 
         template <typename T>
@@ -88,6 +90,26 @@ namespace HushDB
         {
             RowPtr ptr{ (Byte*)(&value), sizeof(T) };
             return InsertRowPtr(ptr);
+        }
+
+        IEnumerator<RowPtr>::Ptr GetEnumerator()
+        {
+            return make_shared<Enumerator>(this);
+        }
+
+    private:
+        PageId headerPageId;
+        PageId currentPageId;
+        BufferManager* bufferManager;
+
+        DataPage* AllocateNewDataPage(SimpleHeapHeaderPage* headerPage)
+        {
+            DataPage* newDataPage = bufferManager->AllocatePage<DataPage>();
+            newDataPage->SetNextPageId(EndOfPage);
+            headerPage->LastDataPageId = newDataPage->GetPageId();
+            currentPageId = newDataPage->GetPageId();
+
+            return newDataPage;
         }
 
         class Enumerator : public IEnumerator<RowPtr>
@@ -157,15 +179,6 @@ namespace HushDB
             DataPage* currentDataPage;
             PageId lastPageId;
         };
-
-        IEnumerator<RowPtr>::Ptr GetEnumerator()
-        {
-            return make_shared<Enumerator>(this);
-        }
-
-    private:
-        PageId headerPageId;
-        BufferManager* bufferManager;
     };
 }
 

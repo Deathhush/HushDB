@@ -27,4 +27,35 @@ TESTCLASS(BufferManagerTests)
         Assert::AreEqual(page, bufferManager.GetPage(page->GetPageId()), L"The page is not correctly retreived.");
         Assert::AreEqual(dataPage, bufferManager.GetPageAs<DataPage>(dataPage->GetPageId()), L"The dataPage is not correctly retreived.");
     }
+
+    TESTMETHOD(TestPinCount)
+    {
+        BufferManager bufferManager;
+        Page* page = bufferManager.AllocatePage();
+        DataPage* dataPage = bufferManager.AllocatePage<DataPage>();
+        Assert::AreEqual(1, bufferManager.GetFrame(dataPage->GetPageId()).PinCount);
+        Assert::AreEqual(true, bufferManager.GetFrame(dataPage->GetPageId()).IsDirty);
+
+        bufferManager.ReleasePage(dataPage->GetPageId());
+        Assert::AreEqual(0, bufferManager.GetFrame(dataPage->GetPageId()).PinCount);
+        Assert::AreEqual(true, bufferManager.GetFrame(dataPage->GetPageId()).IsDirty);
+
+        bufferManager.GetFrame(page->GetPageId()).IsDirty = false;
+        bufferManager.GetPage(page->GetPageId());
+        bufferManager.GetPage(page->GetPageId());
+
+        Assert::AreEqual(3, bufferManager.GetFrame(page->GetPageId()).PinCount);
+        bufferManager.ReleasePage(page->GetPageId());
+        Assert::AreEqual(2, bufferManager.GetFrame(page->GetPageId()).PinCount);
+        Assert::AreEqual(false, bufferManager.GetFrame(page->GetPageId()).IsDirty);
+        bufferManager.ReleasePage(page->GetPageId(), true);
+        Assert::AreEqual(1, bufferManager.GetFrame(page->GetPageId()).PinCount);
+        Assert::AreEqual(true, bufferManager.GetFrame(page->GetPageId()).IsDirty);
+        bufferManager.ReleasePage(page->GetPageId(), true);
+        Assert::AreEqual(0, bufferManager.GetFrame(page->GetPageId()).PinCount);
+        Assert::AreEqual(true, bufferManager.GetFrame(page->GetPageId()).IsDirty);
+
+    }
+
+
 };

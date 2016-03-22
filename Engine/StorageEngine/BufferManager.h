@@ -11,9 +11,16 @@ using namespace Hush;
 
 namespace HushDB
 {
+    struct PageFrame
+    {
+        Page* Page;
+        int PinCount;
+        bool IsDirty;
+    };
+
     class BufferManager
     {
-        typedef std::map<PageId, Page*> BufferPool;
+        typedef std::map<PageId, PageFrame> BufferPool;
     public:
         BufferManager()
             : nextPageId(1)
@@ -24,7 +31,7 @@ namespace HushDB
         {
             for (BufferPool::iterator i = pagePool.begin(); i != pagePool.end(); i++)
             {
-                delete i->second;
+                delete i->second.Page;
             }
 
             pagePool.clear();
@@ -35,7 +42,8 @@ namespace HushDB
         {
             TPage* page = new TPage();
             page->SetPageId(nextPageId);
-            pagePool.insert(BufferPool::value_type(nextPageId, (Page*)page));
+
+            pagePool.insert(BufferPool::value_type(nextPageId, PageFrame{ (Page*)page, 1, true }));
 
             nextPageId++;
 
@@ -55,12 +63,31 @@ namespace HushDB
 
         Page* GetPage(const PageId& pageId)
         {
-            Page* page = 0;
+            Page* page = nullptr;
             if (pagePool.find(pageId) != pagePool.end())
             {
-                page = pagePool[pageId];
+                page = pagePool[pageId].Page;
+                pagePool[pageId].PinCount++;
             }
             return page;
+        }
+
+        void ReleasePage(const PageId& pageId, bool isDirty = false)
+        {
+            if (pagePool.find(pageId) != pagePool.end())
+            {                
+                PageFrame& frame = pagePool[pageId];
+                frame.PinCount--;                   
+                if (isDirty)
+                {
+                    frame.IsDirty = true;
+                }
+            }
+        }
+
+        PageFrame& GetFrame(const PageId& pageId)
+        {
+            return pagePool.at(pageId);
         }
 
     private:
