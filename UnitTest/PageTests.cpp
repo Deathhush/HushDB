@@ -2,6 +2,7 @@
 using namespace std;
 
 #include "Framework\UnitTest.h"
+#include "TestUtility.h"
 using namespace Hush;
 using namespace Hush::UnitTest;
 
@@ -9,15 +10,7 @@ using namespace Hush::UnitTest;
 #include "..\Engine\StorageEngine\Page.h"
 using namespace HushDB;
 
-template <typename T>
-inline void AssertRowPtr(const T& value, const RowPtr& rowPtr, const wstring& message)
-{
-    Int32 length = rowPtr.length;
-    T testvalue = *((T*)(rowPtr.data));
 
-    Assert::AreEqual<Int32>(sizeof(T), length, message + L"(Size)");
-    Assert::AreEqual<T>(value, testvalue, message + L"(Data)");
-}
 
 TESTCLASS(PageTests)
 {
@@ -241,5 +234,13 @@ public:
         Assert::IsFalse(enumerator->MoveNext());
         Assert::IsFalse(enumerator->MoveNext());       
 
+    }
+
+    TESTMETHOD(TestEnumerateEmptyPage)
+    {
+        DataPage page(1);
+        IEnumerator<RowPtr>::Ptr enumerator = page.GetEnumerator();
+        Assert::IsFalse(enumerator->MoveNext());
+        Assert::IsFalse(enumerator->MoveNext());
     }
 };

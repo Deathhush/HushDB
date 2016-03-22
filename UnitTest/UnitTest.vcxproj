@@ -157,10 +157,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnalyzerTests.cpp" />
+    <ClCompile Include="BufferManagerTests.cpp" />
     <ClCompile Include="ClientTests.cpp" />
     <ClCompile Include="DataRowTests.cpp" />
     <ClCompile Include="Framework\UnitTest.cpp" />
     <ClCompile Include="Framework\UnitTestTests.cpp" />
+    <ClCompile Include="HeapTests.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MemoryStorageTests.cpp" />
     <ClCompile Include="OptimizerTests.cpp" />
@@ -176,7 +178,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Engine\StorageEngine\PageFile.h" />
     <ClInclude Include="Framework\UnitTest.h" />
     <ClInclude Include="TestUtility.h" />
   </ItemGroup>

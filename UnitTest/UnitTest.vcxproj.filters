@@ -18,6 +18,8 @@
     <ClCompile Include="PageTests.cpp" />
     <ClCompile Include="DataRowTests.cpp" />
     <ClCompile Include="PageFileTests.cpp" />
+    <ClCompile Include="BufferManagerTests.cpp" />
+    <ClCompile Include="HeapTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Framework">
@@ -29,6 +31,5 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="TestUtility.h" />
-    <ClInclude Include="..\Engine\StorageEngine\PageFile.h" />
   </ItemGroup>
 </Project>

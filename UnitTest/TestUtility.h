@@ -12,7 +12,18 @@ using namespace Hush::UnitTest;
 #include "..\Engine\Client\Client.h"
 #include "..\Engine\StorageEngine\MemoryStorage.h"
 #include "..\Engine\Client\SqlCommand.h"
+#include "..\Engine\StorageEngine\Page.h"
 using namespace HushDB;
+
+template <typename T>
+inline void AssertRowPtr(const T& value, const RowPtr& rowPtr, const wstring& message)
+{
+    Int32 length = rowPtr.length;
+    T testvalue = *((T*)(rowPtr.data));
+
+    Assert::AreEqual<Int32>(sizeof(T), length, message + L"(Size)");
+    Assert::AreEqual<T>(value, testvalue, message + L"(Data)");
+}
 
 struct TestUtility
 {

@@ -4,6 +4,7 @@
 using namespace std;
 
 #include "Framework\UnitTest.h"
+#include "TestUtility.h"
 using namespace Hush;
 using namespace Hush::UnitTest;
 

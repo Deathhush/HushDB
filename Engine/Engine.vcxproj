@@ -30,7 +30,9 @@
     <ClInclude Include="QueryProcessor\Parser.h" />
     <ClInclude Include="QueryProcessor\Tokenizer.h" />
     <ClInclude Include="Schema.h" />
+    <ClInclude Include="StorageEngine\BufferManager.h" />
     <ClInclude Include="StorageEngine\DataRow.h" />
+    <ClInclude Include="StorageEngine\Heap.h" />
     <ClInclude Include="StorageEngine\MemoryStorage.h" />
     <ClInclude Include="StorageEngine\Page.h" />
     <ClInclude Include="StorageEngine\PageFile.h" />
