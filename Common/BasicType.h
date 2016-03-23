@@ -41,7 +41,7 @@ namespace Hush
         typedef shared_ptr<IEnumerator<T>> Ptr;
 
         virtual bool MoveNext() = 0;
-        virtual const T& Current() = 0;
+        virtual const T Current() = 0;
         virtual ~IEnumerator() {}
     };
 

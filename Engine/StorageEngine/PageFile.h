@@ -16,6 +16,8 @@ namespace HushDB
     class PageFile
     {
     public:
+        typedef shared_ptr<PageFile> Ptr;
+
         PageFile(const String& fileName)
             :fileName(fileName)
         {
@@ -60,10 +62,13 @@ namespace HushDB
         }
         
         template <typename TPage>
-        void AppendPage(TPage* page)
+        void AllocatePage(TPage* page)
         {
             UInt32 pageSize = sizeof(TPage);
-            page->SetPageId(nextPageId);
+            if (page->GetPageId() != nextPageId)
+            {
+                throw InvalidOperationException(T("Page id is not set correctly"));
+            }            
             nextPageId++;
             fseek(file, 0, SEEK_END);            
             fwrite((Byte*)page, sizeof(Byte), pageSize, file);
@@ -82,15 +87,28 @@ namespace HushDB
             return (TPage*)buffer.release();
         }
 
+        void ReadPageTo(Page* page, PageId pageId)
+        {
+            UInt32 pageSize = sizeof(Page);
+            fseek(file, pageId*pageSize, SEEK_SET);
+            fread(page, sizeof(Byte), pageSize, file);
+        }
+
         template <typename TPage>
         void WritePage(TPage* page)
         {
-            UInt32 pageSize = sizeof(TPage);
-            PageId pageId = page->GetPageId();            
+            PageId pageId = page->GetPageId();
+            if (pageId >= nextPageId)
+            {
+                throw OutOfRangeException(T("Page id is too large."));
+            }
+
+            UInt32 pageSize = sizeof(TPage);            
             fseek(file, pageId*pageSize, SEEK_SET);
             fwrite((Byte*)page, sizeof(Byte), pageSize, file);
         }
 
+        PageId GetNextPageId() { return this->nextPageId; }
 
     private:
         FILE* file;

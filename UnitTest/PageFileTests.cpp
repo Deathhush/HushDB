@@ -31,7 +31,7 @@ public:
         RowId rowId1 = page.InsertRowValue(row1);
         RowId rowId2 = page.InsertRowValue(row2); 
                 
-        file.WritePage(&page);
+        file.AllocatePage(&page);
         file.Flush();
 
         DataPage* pageFromFile = file.ReadPageAs<DataPage>(0);
@@ -62,7 +62,7 @@ public:
         RowId rowId1 = page.InsertRowValue(row1);
         RowId rowId2 = page.InsertRowValue(row2);
 
-        file.WritePage(&page);
+        file.AllocatePage(&page);
         file.Flush();
         file.Close();
 
@@ -81,11 +81,11 @@ public:
         file.Open();
 
         DataPage page(0);
-        file.AppendPage(&page);
+        file.AllocatePage(&page);
         file.Flush();
         Assert::AreEqual(PageSize, file.Size());
         DataPage page1(1);
-        file.AppendPage(&page1);
+        file.AllocatePage(&page1);
         file.Flush();
         Assert::AreEqual(2*PageSize, file.Size());
 
@@ -97,16 +97,16 @@ public:
         PageFile file(STR("test.df"));
         file.Open();
 
-        DataPage page(100);
-        file.AppendPage(&page);
+        DataPage page(0);
+        file.AllocatePage(&page);
         file.Flush();
         Assert::AreEqual(PageSize, file.Size());
         Assert::AreEqual(0, page.GetPageId());
         file.Close();
 
         file.Open();
-        DataPage page1(100);
-        file.AppendPage(&page1);
+        DataPage page1(1);
+        file.AllocatePage(&page1);
         file.Flush();
         Assert::AreEqual(1, page1.GetPageId());
         Assert::AreEqual(2 * PageSize, file.Size());

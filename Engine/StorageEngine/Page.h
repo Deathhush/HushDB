@@ -293,7 +293,7 @@ namespace HushDB
                 return false;               
             }
 
-            virtual const RowPtr& Current() override
+            virtual const RowPtr Current() override
             {
                 if (this->currentSlotId == InvalidSlotId)
                 {
