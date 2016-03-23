@@ -37,14 +37,14 @@ namespace HushDB
 
             // Process FromClause
             FromClause::Ptr fromClause = query->FromClause;
-            TableDef::Ptr tableDef = this->catalog->FindTable(*(fromClause->TableName));
+            IObjectDef::Ptr tableDef = this->catalog->FindTable(*(fromClause->TableName));
 
             if (tableDef == nullptr)
             {
                 throw AnalyzerException(STR("Table [") + *(fromClause->TableName) + STR("] does not exist."));
             }
 
-            plan->AddScan(LogicalScan{ tableDef });
+            plan->AddScan(LogicalScan{ tableDef->ObjectId() });
 
             // Process SelectList
             TargetList::Ptr targetList = query->TargetList;
@@ -56,7 +56,8 @@ namespace HushDB
 
             for (TargetElement::Ptr element : targetList->Elements)
             {
-                if (!element->isStar && !tableDef->Schema.ContainsColumn(*(element->ColumnName)))
+                ITupleDesc::Ptr schema = catalog->FindTableSchema(tableDef);
+                if (!element->isStar && !schema->ContainsColumn(*(element->ColumnName)))
                 {
                     throw AnalyzerException(STR("Column [") + *(element->ColumnName) + STR("] does not exist in table [.") + *(fromClause->TableName) + STR("]."));
                 }

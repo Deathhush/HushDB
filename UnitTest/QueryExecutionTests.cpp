@@ -21,11 +21,11 @@ TESTCLASS(QueryExecutionTests)
 
         Catalog::Ptr catalog = make_shared<Catalog>();
 
-        TableDef tableDef;
+        MemoryTableDef tableDef;
         tableDef.Name = T("t1");
-        tableDef.Schema.AddColumn(T("id"), SqlType::Int);
-        tableDef.Schema.AddColumn(T("data"), SqlType::String);
-        tableDef.Schema.AddColumn(T("region"), SqlType::Int);
+        tableDef.Schema->AddColumn(T("id"), SqlType::Int);
+        tableDef.Schema->AddColumn(T("data"), SqlType::String);
+        tableDef.Schema->AddColumn(T("region"), SqlType::Int);
         tableDef.Table = table;
 
         catalog->AddTable(tableDef);

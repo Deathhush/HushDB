@@ -3,6 +3,7 @@
 
 #include <memory.h>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 #include "..\..\Common\BasicType.h"
@@ -21,6 +22,14 @@ namespace HushDB
     {
     public:
         static const Int16 NullOffset = -1;
+
+        static Int32 CalculateRowSize(const vector<DbValue::Ptr>& fields)
+        {
+            int totalSize = 2;
+            for_each(fields.begin(), fields.end(), [&](DbValue::Ptr v) { totalSize += (v->Size()+2); });
+            return totalSize;
+        }
+
         // This method assumes that Byte* has enough space to hold all the values
         static void CopyDataRow(Byte* destination, const vector<DbValue::Ptr>& fields)
         {
@@ -54,7 +63,7 @@ namespace HushDB
         }
 
     public:
-        DataRow(TupleDesc::Ptr schema, Byte* data)
+        DataRow(ITupleDesc::Ptr schema, Byte* data)
             : Schema(schema), Data(data)
         {
         }
@@ -66,9 +75,9 @@ namespace HushDB
             Int16 fieldOffset = offsets[columnIndex];
             Int16 fieldSize = offsets[columnIndex + 1] - offsets[columnIndex];
             Byte* fieldData = this->Data + fieldOffset;
-            ColumnDesc::Ptr columnDesc = this->Schema->ColumnList[columnIndex];
+            IColumnDesc::Ptr columnDesc = this->Schema->GetColumnDesc(columnIndex);
 
-            switch (columnDesc->Type)
+            switch (columnDesc->ColumnType())
             {
             case SqlType::Int:                
                 if (fieldOffset == DataRow::NullOffset)
@@ -103,7 +112,7 @@ namespace HushDB
             }
         }
 
-        TupleDesc::Ptr Schema;
+        ITupleDesc::Ptr Schema;
         Byte* Data;
     };
 }

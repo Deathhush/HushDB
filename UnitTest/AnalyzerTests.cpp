@@ -12,10 +12,10 @@ TESTCLASS(AnalyzerTests)
 {
     TESTMETHOD(TestBasic)
     {
-        TableDef tableDef;
+        MemoryTableDef tableDef;
         tableDef.Name = T("t1");
-        tableDef.Schema.AddColumn(T("c1"), SqlType::Int);
-        tableDef.Schema.AddColumn(T("c2"), SqlType::String);
+        tableDef.Schema->AddColumn(T("c1"), SqlType::Int);
+        tableDef.Schema->AddColumn(T("c2"), SqlType::String);
 
         Catalog::Ptr catalog = make_shared<Catalog>();
         catalog->AddTable(tableDef);

@@ -159,6 +159,7 @@
     <ClCompile Include="AnalyzerTests.cpp" />
     <ClCompile Include="BufferManagerTests.cpp" />
     <ClCompile Include="ClientTests.cpp" />
+    <ClCompile Include="DataFileTests.cpp" />
     <ClCompile Include="DataRowTests.cpp" />
     <ClCompile Include="Framework\UnitTest.cpp" />
     <ClCompile Include="Framework\UnitTestTests.cpp" />

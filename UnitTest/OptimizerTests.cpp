@@ -13,10 +13,10 @@ TESTCLASS(OptimizerTests)
 {
     TESTMETHOD(TestOptimizeBasicQuery)
     {
-        TableDef tableDef;
+        MemoryTableDef tableDef;
         tableDef.Name = T("t1");
-        tableDef.Schema.AddColumn(T("c1"), SqlType::Int);
-        tableDef.Schema.AddColumn(T("c2"), SqlType::String);
+        tableDef.Schema->AddColumn(T("c1"), SqlType::Int);
+        tableDef.Schema->AddColumn(T("c2"), SqlType::String);
 
         Catalog::Ptr catalog = make_shared<Catalog>();
         catalog->AddTable(tableDef);
@@ -30,7 +30,7 @@ TESTCLASS(OptimizerTests)
         Analyzer analyzer(catalog);
         LogicalPlan::Ptr plan = analyzer.Analyze(selectStmt);
 
-        Optimizer o;
+        Optimizer o(catalog);
         IExecutionPlanNode::Ptr executionPlan = o.Optimize(plan);
 
         Assert::IsNotNullPtr(executionPlan);

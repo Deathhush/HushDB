@@ -28,17 +28,17 @@ namespace HushDB
         typedef shared_ptr<MemoryTableScan> Ptr;
 
     public:
-        MemoryTableScan(TableDef::Ptr table)
-            :TableDef(table)
+        MemoryTableScan(MemoryTableDef::Ptr table)
+            :MemoryTableDef(table)
         {
 
         }
         virtual IDataReader::Ptr Execute() override
         {
-            return this->TableDef->Table->OpenScan();
+            return this->MemoryTableDef->Table->OpenScan();
         }
 
-        TableDef::Ptr TableDef;
+        MemoryTableDef::Ptr MemoryTableDef;
     };
 }
 

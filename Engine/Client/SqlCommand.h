@@ -28,7 +28,7 @@ namespace HushDB
             Analyzer analyzer(catalog);
             LogicalPlan::Ptr plan = analyzer.Analyze(selectStmt);
 
-            Optimizer o;
+            Optimizer o(catalog);
             IExecutionPlanNode::Ptr executionPlan = o.Optimize(plan);
 
             IDataReader::Ptr reader = executionPlan->Execute();

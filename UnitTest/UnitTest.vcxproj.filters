@@ -20,6 +20,7 @@
     <ClCompile Include="PageFileTests.cpp" />
     <ClCompile Include="BufferManagerTests.cpp" />
     <ClCompile Include="HeapTests.cpp" />
+    <ClCompile Include="DataFileTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Framework">

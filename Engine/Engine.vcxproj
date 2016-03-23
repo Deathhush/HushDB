@@ -31,6 +31,7 @@
     <ClInclude Include="QueryProcessor\Tokenizer.h" />
     <ClInclude Include="Schema.h" />
     <ClInclude Include="StorageEngine\BufferManager.h" />
+    <ClInclude Include="StorageEngine\DataFile.h" />
     <ClInclude Include="StorageEngine\DataRow.h" />
     <ClInclude Include="StorageEngine\Heap.h" />
     <ClInclude Include="StorageEngine\MemoryStorage.h" />
@@ -38,6 +39,7 @@
     <ClInclude Include="StorageEngine\PageFile.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Catalog.cpp" />
     <ClCompile Include="QueryProcessor\Parser.cpp" />
     <ClCompile Include="QueryProcessor\Tokenizer.cpp" />
     <ClCompile Include="StorageEngine\Page.cpp" />

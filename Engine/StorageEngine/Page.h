@@ -320,8 +320,7 @@ namespace HushDB
 
         RowPtr InsertDataRow(const vector<DbValue::Ptr>& fields)
         {
-            int totalSize = 0;
-            for_each(fields.begin(), fields.end(), [&](DbValue::Ptr v) { totalSize += v->Size(); });
+            int totalSize = DataRow::CalculateRowSize(fields);
             RowPtr rowPtr = this->GetRowPtr(this->InsertEmptyRow(totalSize));
 
             DataRow::CopyDataRow(rowPtr.data, fields);  

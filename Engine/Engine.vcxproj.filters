@@ -48,6 +48,9 @@
     <ClInclude Include="StorageEngine\Heap.h">
       <Filter>StorageEngine</Filter>
     </ClInclude>
+    <ClInclude Include="StorageEngine\DataFile.h">
+      <Filter>StorageEngine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">
@@ -59,6 +62,7 @@
     <ClCompile Include="StorageEngine\Page.cpp">
       <Filter>StorageEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Catalog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">

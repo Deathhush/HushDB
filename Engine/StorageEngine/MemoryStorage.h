@@ -26,13 +26,13 @@ namespace HushDB
 
     struct MemoryTable
     {
-        typedef vector<MemoryDataRow::Ptr> TableType;
+        typedef vector<MemoryDataRow::Ptr> ObjectType;
         typedef shared_ptr<MemoryTable> Ptr;
 
         class Enumerator : public IDataReader
         {
         public:
-            Enumerator(const MemoryTable::TableType::iterator& begin, const MemoryTable::TableType::iterator& end, TupleDesc::Ptr schema)
+            Enumerator(const MemoryTable::ObjectType::iterator& begin, const MemoryTable::ObjectType::iterator& end, TupleDesc::Ptr schema)
             {
                 this->current = begin;
                 this->end = end;
@@ -72,8 +72,8 @@ namespace HushDB
                 throw OutOfRangeException(T("Reached end"));
             }
         private:
-            MemoryTable::TableType::iterator current;
-            MemoryTable::TableType::iterator end;
+            MemoryTable::ObjectType::iterator current;
+            MemoryTable::ObjectType::iterator end;
             TupleDesc::Ptr schema;
             bool hasData;
             bool isFirstMove;

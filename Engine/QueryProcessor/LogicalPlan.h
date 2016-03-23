@@ -13,7 +13,7 @@ namespace HushDB
 {
     struct LogicalScan
     {
-        TableDef::Ptr TableDef;
+        Int32 ObjectId;
     };
 
     struct LogicalSelectItem

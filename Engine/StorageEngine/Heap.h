@@ -11,6 +11,7 @@ using namespace Hush;
 #include "..\Client\Client.h"
 #include "Page.h"
 #include "BufferManager.h"
+#include "DataRow.h"
 
 
 namespace HushDB
@@ -22,7 +23,7 @@ namespace HushDB
         static const UInt16 DataRegionSize = PageSize - PageFixedDataSize;
 
         SimpleHeapHeaderPageData()
-            : pageId(InvalidPageId), slotCount(0), freeSpaceOffset(0), maxSlotId(InvalidSlotId), nextPage(EndOfPage)
+            : pageId(InvalidPageId), slotCount(0), freeSpaceOffset(0), maxSlotId(InvalidSlotId), nextPage(EndOfPage), FirstDataPageId(InvalidPageId), LastDataPageId(InvalidPageId)
         {
             memset(this->data, 0, DataPageData::DataRegionSize);
         }
@@ -82,7 +83,8 @@ namespace HushDB
             if (currentPage->GetAvailableSpace() < rowPtr.length)
             {
                 SimpleHeapHeaderPage* headerPage = bufferManager->GetPageAs<SimpleHeapHeaderPage>(headerPageId);
-
+                
+                bufferManager->ReleasePage(currentPageId);
                 DataPage* newDataPage = AllocateNewDataPage(headerPage);
                 currentPage = newDataPage;
 
@@ -90,6 +92,32 @@ namespace HushDB
             }
 
             RowId result = currentPage->InsertRowPtr(rowPtr);            
+            bufferManager->ReleasePage(currentPage->GetPageId(), true);
+
+            return result;
+        }
+
+        RowId InsertDataRow(const vector<DbValue::Ptr>& fields)
+        {
+            DataPage* currentPage = bufferManager->GetPageAs<DataPage>(currentPageId);
+
+            Int32 rowSize = DataRow::CalculateRowSize(fields);
+
+            if (currentPage->GetAvailableSpace() < rowSize)
+            {
+                SimpleHeapHeaderPage* headerPage = bufferManager->GetPageAs<SimpleHeapHeaderPage>(headerPageId);
+                bufferManager->ReleasePage(currentPageId);
+
+                DataPage* newDataPage = AllocateNewDataPage(headerPage);
+                currentPage = newDataPage;
+
+                bufferManager->ReleasePage(headerPage->GetPageId(), true);
+            }
+
+            RowId result = currentPage->InsertEmptyRow(rowSize);
+            RowPtr rowPtr = currentPage->GetRowPtr(result);
+            DataRow::CopyDataRow(rowPtr.data, fields);
+            
             bufferManager->ReleasePage(currentPage->GetPageId(), true);
 
             return result;

@@ -17,15 +17,51 @@ namespace HushDB
         String
     };
 
+    struct IColumnDesc
+    {
+        typedef shared_ptr<IColumnDesc> Ptr;
 
-    struct ColumnDesc
+        virtual String ColumnName() = 0;
+        virtual SqlType ColumnType() = 0;
+    };
+
+    struct ColumnDesc : public IColumnDesc
     {
         typedef shared_ptr<ColumnDesc> Ptr;
+
+        ColumnDesc(const String& name, const SqlType& type)
+            : Name(name), Type(type)
+        {
+        }
+
+        virtual String ColumnName()
+        {
+            return this->Name;
+        }
+
+        virtual SqlType ColumnType()
+        {
+            return this->Type;
+        }
+
         String Name;
         SqlType Type;        
     };
 
-    class TupleDesc
+    struct ITupleDesc
+    {
+        typedef shared_ptr<ITupleDesc> Ptr;
+
+        virtual int GetOrdinal(const String& columnName) = 0;
+        virtual IColumnDesc::Ptr GetColumnDesc(const Int32& columnIndex) = 0;
+
+        bool ContainsColumn(const String& columnName)
+        {
+            return this->GetOrdinal(columnName) != -1;
+        }
+    };
+
+    class TupleDesc : public ITupleDesc
     {
     public:
         typedef shared_ptr<TupleDesc> Ptr;
@@ -38,7 +74,7 @@ namespace HushDB
 
         void AddColumn(const String& columnName, const SqlType& columnType)
         {
-            this->AddColumn(ColumnDesc{ columnName, columnType });
+            this->AddColumn(ColumnDesc(columnName, columnType));
         }
 
         bool ContainsColumn(const String& columnName)
@@ -46,9 +82,22 @@ namespace HushDB
             return this->columnMap.find(columnName) != this->columnMap.end();
         }
 
-        int GetOrdinal(const String& columnName)
+        virtual int GetOrdinal(const String& columnName) override
         {
-            return this->columnMap.at(columnName);
+            auto it = this->columnMap.find(columnName);
+            if (it != this->columnMap.end())
+            {
+                return it->second;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        virtual IColumnDesc::Ptr GetColumnDesc(const Int32& columnIndex) override
+        {
+            return ColumnList[columnIndex];
         }
 
     public:
