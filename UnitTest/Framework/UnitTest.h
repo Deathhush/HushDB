@@ -140,7 +140,7 @@ namespace Hush
 
 
 #define TESTCLASS(ClassName) \
-        class ClassName; \
+        struct ClassName; \
         struct ClassName##Registrator : public TestClassRegistrator<ClassName> \
         {    virtual const Hush::Char* GetClassName() { return L#ClassName; } }; \
         ClassName##Registrator ClassName##Instance; \
@@ -186,7 +186,18 @@ namespace Hush
         {
             static String ToString(const T& value) { return String(); }
         };
-        
+
+        template<typename T>
+        String ToString(const T& value)
+        {
+            wstringstream ss;
+            ss << value;
+            String result;
+            ss >> result;
+
+            return result;
+        }
+
         // Int
         template <>
         struct ToStringTrait<Int32>
@@ -199,14 +210,27 @@ namespace Hush
         {
             static String ToString(const Int32& value)
             {
-                wstringstream ss;
-                ss << value;
-                String result;
-                ss >> result;
-
-                return result;
+                return Hush::UnitTest::ToString<Int32>(value);
             }
         };
+
+        // UInt32
+        template <>
+        struct ToStringTrait<UInt32>
+        {
+            enum { Supported = true };
+        };
+
+        template <>
+        struct Convert<UInt32>
+        {
+            static String ToString(const Int32& value)
+            {
+                return Hush::UnitTest::ToString<UInt32>(value);
+            }
+        };
+
+
 
         // String
         template <>
@@ -227,7 +251,7 @@ namespace Hush
         template<typename T>
         struct EqualAssertion
         {
-            static bool AreEqual(const T& expected, const T& actual, const String& message = String())
+            static void AreEqual(const T& expected, const T& actual, const String& message = String())
             {
                 if (!(expected == actual))
                 {
@@ -265,7 +289,7 @@ namespace Hush
         template<typename T>
         struct EqualAssertion<T*>
         {
-            static bool AreEqual(const T* expected, const T* actual, const String& message = String())
+            static void AreEqual(const T* expected, const T* actual, const String& message = String())
             {
                 if (!(*expected == *actual))
                 {
@@ -303,7 +327,7 @@ namespace Hush
         template<typename T>
         struct EqualAssertion<shared_ptr<T>>
         {
-            static bool AreEqual(shared_ptr<T> expected, shared_ptr<T> actual, const String& message = String())
+            static void AreEqual(shared_ptr<T> expected, shared_ptr<T> actual, const String& message = String())
             {
                 if (!(*expected == *actual))
                 {

@@ -44,11 +44,11 @@ namespace Hush
             }
             catch (Exception& Ex)
             {
-                wcout << L"Unhandled Exception caught. Exception message:" << Ex.GetMessage() << endl;
+                wcout << L"Unhandled Exception caught. Exception message: " << Ex.GetMessage() << endl;
             }
             catch (exception& ex)
             {
-                cout << "std::exception caught. exception message:" << ex.what() << endl;
+                cout << "std::exception caught. exception message: " << ex.what() << endl;
             }
             catch(...)
             {
