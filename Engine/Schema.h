@@ -17,19 +17,19 @@ namespace HushDB
         String
     };
 
-    struct IColumnDesc
+    struct IColumnDef
     {
-        typedef shared_ptr<IColumnDesc> Ptr;
+        typedef shared_ptr<IColumnDef> Ptr;
 
         virtual String ColumnName() = 0;
         virtual SqlType ColumnType() = 0;
     };
 
-    struct ColumnDesc : public IColumnDesc
+    struct ColumnDef : public IColumnDef
     {
-        typedef shared_ptr<ColumnDesc> Ptr;
+        typedef shared_ptr<ColumnDef> Ptr;
 
-        ColumnDesc(const String& name, const SqlType& type)
+        ColumnDef(const String& name, const SqlType& type)
             : Name(name), Type(type)
         {
         }
@@ -53,7 +53,7 @@ namespace HushDB
         typedef shared_ptr<ITupleDesc> Ptr;
 
         virtual int GetOrdinal(const String& columnName) = 0;
-        virtual IColumnDesc::Ptr GetColumnDesc(const Int32& columnIndex) = 0;
+        virtual IColumnDef::Ptr GetColumnDesc(const Int32& columnIndex) = 0;
 
         bool ContainsColumn(const String& columnName)
         {
@@ -65,16 +65,16 @@ namespace HushDB
     {
     public:
         typedef shared_ptr<TupleDesc> Ptr;
-        void AddColumn(const ColumnDesc& column)
+        void AddColumn(const ColumnDef& column)
         {
-            ColumnDesc::Ptr columnPtr = make_shared<ColumnDesc>(column);
+            ColumnDef::Ptr columnPtr = make_shared<ColumnDef>(column);
             this->ColumnList.push_back(columnPtr);
             this->columnMap[column.Name] = this->ColumnList.size() - 1;
         }
 
         void AddColumn(const String& columnName, const SqlType& columnType)
         {
-            this->AddColumn(ColumnDesc(columnName, columnType));
+            this->AddColumn(ColumnDef(columnName, columnType));
         }
 
         bool ContainsColumn(const String& columnName)
@@ -95,13 +95,13 @@ namespace HushDB
             }
         }
 
-        virtual IColumnDesc::Ptr GetColumnDesc(const Int32& columnIndex) override
+        virtual IColumnDef::Ptr GetColumnDesc(const Int32& columnIndex) override
         {
             return ColumnList[columnIndex];
         }
 
     public:
-        vector<ColumnDesc::Ptr> ColumnList;
+        vector<ColumnDef::Ptr> ColumnList;
 
     private:        
         map<String, int> columnMap;

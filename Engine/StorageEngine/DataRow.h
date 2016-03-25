@@ -80,7 +80,7 @@ namespace HushDB
             Int16 fieldOffset = offsets[columnIndex];
             Int16 fieldSize = offsets[columnIndex + 1] - offsets[columnIndex];
             Byte* fieldData = this->Data + fieldOffset;
-            IColumnDesc::Ptr columnDesc = this->Schema->GetColumnDesc(columnIndex);
+            IColumnDef::Ptr columnDesc = this->Schema->GetColumnDesc(columnIndex);
 
             switch (columnDesc->ColumnType())
             {

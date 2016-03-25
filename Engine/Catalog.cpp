@@ -2,9 +2,17 @@
 
 namespace HushDB
 {
-    ColumnDesc::Ptr TableDefDescType::ObjectIdDesc = make_shared<ColumnDesc>(T("ObjectId"), SqlType::Int);
-    ColumnDesc::Ptr TableDefDescType::ObjectNameDesc = make_shared<ColumnDesc>(T("ObjectName"), SqlType::String);
-    ColumnDesc::Ptr TableDefDescType::TypeDesc = make_shared<ColumnDesc>(T("Type"), SqlType::Int);
+    ColumnDef::Ptr TableDefDesc::ObjectIdDef = make_shared<ColumnDef>(T("ObjectId"), SqlType::Int);
+    ColumnDef::Ptr TableDefDesc::ObjectNameDef = make_shared<ColumnDef>(T("ObjectName"), SqlType::String);
+    ColumnDef::Ptr TableDefDesc::ObjectTypeDef = make_shared<ColumnDef>(T("ObjectType"), SqlType::Int);
+    ColumnDef::Ptr TableDefDesc::HeaderPageIdDef = make_shared<ColumnDef>(T("HeaderPageId"), SqlType::Int);
 
-    TableDefDescType::Ptr TableDefDesc = make_shared<TableDefDescType>();
+    TableDefDesc::Ptr TableDefSchema = make_shared<TableDefDesc>();
+
+    ColumnDef::Ptr ColumnDefDesc::ObjectIdDef = make_shared<ColumnDef>(T("ObjectId"), SqlType::Int);
+    ColumnDef::Ptr ColumnDefDesc::ColumnNameDef = make_shared<ColumnDef>(T("ColumnName"), SqlType::String);
+    ColumnDef::Ptr ColumnDefDesc::ColumnIdDef = make_shared<ColumnDef>(T("ColumnId"), SqlType::Int);
+    ColumnDef::Ptr ColumnDefDesc::ColumnTypeDef = make_shared<ColumnDef>(T("ColumnType"), SqlType::Int);
+
+    ColumnDefDesc::Ptr ColumnDefSchema = make_shared<ColumnDefDesc>();
 }

@@ -23,7 +23,7 @@ namespace HushDB
         static const UInt16 DataRegionSize = PageSize - PageFixedDataSize;
 
         DataFileHeaderPageData()
-            : pageId(InvalidPageId), ObjectDefPageId(InvalidPageId), SchemaPageId(InvalidPageId)
+            : pageId(InvalidPageId), ObjectDefPageId(InvalidPageId), ColumnDefPageId(InvalidPageId)
         {
             memset(this->data, 0, DataPageData::DataRegionSize);
         }
@@ -31,7 +31,7 @@ namespace HushDB
     public:
         // SimpleHeapHeaderPage
         PageId ObjectDefPageId;
-        PageId SchemaPageId;
+        PageId ColumnDefPageId;
 
         // DataPage layout
         Byte data[DataRegionSize]; // data region
@@ -51,8 +51,8 @@ namespace HushDB
             DataFileHeaderPage* headerPage = bufferManager.AllocatePage<DataFileHeaderPage>();
             SimpleHeap objectDefHeap(&bufferManager);
             headerPage->ObjectDefPageId = objectDefHeap.GetHeaderPageId();
-            SimpleHeap schemaHeap(&bufferManager);
-            headerPage->SchemaPageId = schemaHeap.GetHeaderPageId();            
+            SimpleHeap columnDefHeap(&bufferManager);
+            headerPage->ColumnDefPageId = columnDefHeap.GetHeaderPageId();
             bufferManager.ReleasePage(headerPage->GetPageId(), true);
         }
     };
