@@ -71,6 +71,11 @@ namespace HushDB
         virtual shared_ptr<DbValue> GetValue(const String& columnName) override
         {
             int columnIndex = this->Schema->GetOrdinal(columnName);
+            return this->GetValue(columnIndex);            
+        }
+
+        virtual shared_ptr<DbValue> GetValue(const Int32& columnIndex) override
+        {
             Int16* offsets = (Int16*)this->Data;
             Int16 fieldOffset = offsets[columnIndex];
             Int16 fieldSize = offsets[columnIndex + 1] - offsets[columnIndex];
@@ -79,7 +84,7 @@ namespace HushDB
 
             switch (columnDesc->ColumnType())
             {
-            case SqlType::Int:                
+            case SqlType::Int:
                 if (fieldOffset == DataRow::NullOffset)
                 {
                     return make_shared<DbInt>();
@@ -87,7 +92,7 @@ namespace HushDB
                 else
                 {
                     return make_shared<DbInt>(*(Int32*)fieldData);
-                }                
+                }
                 break;
             case SqlType::Float:
                 if (fieldOffset == DataRow::NullOffset)

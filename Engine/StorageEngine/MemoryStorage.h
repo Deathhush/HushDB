@@ -20,6 +20,11 @@ namespace HushDB
             return this->Values[this->Schema->GetOrdinal(columnName)];
         }
 
+        virtual DbValue::Ptr GetValue(const Int32& columnIndex) override
+        {
+            return this->Values[columnIndex];
+        }
+
         vector<DbValue::Ptr> Values;
         TupleDesc::Ptr Schema;
     };
