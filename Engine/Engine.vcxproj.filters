@@ -51,6 +51,9 @@
     <ClInclude Include="StorageEngine\DataFile.h">
       <Filter>StorageEngine</Filter>
     </ClInclude>
+    <ClInclude Include="Client\SqlConnection.h">
+      <Filter>Client</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">

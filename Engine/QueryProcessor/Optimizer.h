@@ -15,7 +15,7 @@ namespace HushDB
     class Optimizer
     {
     public:
-        Optimizer(Catalog::Ptr catalog)
+        Optimizer(Catalog* catalog)
             :catalog(catalog)
         {}
         IExecutionPlanNode::Ptr Optimize(LogicalPlan::Ptr plan)
@@ -42,7 +42,7 @@ namespace HushDB
             throw Exception(T("Failed to optimize the logical plan."));
         }
     private:
-        Catalog::Ptr catalog;
+        Catalog* catalog;
     };
 }
 

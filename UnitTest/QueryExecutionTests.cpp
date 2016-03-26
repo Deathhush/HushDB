@@ -9,6 +9,7 @@ using namespace Hush::UnitTest;
 #include "..\Engine\Client\Client.h"
 #include "..\Engine\StorageEngine\MemoryStorage.h"
 #include "..\Engine\Client\SqlCommand.h"
+#include "..\Engine\Client\SqlConnection.h"
 #include "..\Engine\Catalog.h"
 #include "..\Engine\StorageEngine\DataFile.h"
 using namespace HushDB;
@@ -37,20 +38,22 @@ TESTCLASS(QueryExecutionTests)
 
         catalog->AddTable(tableDef);
 
-        SqlCommand command(catalog);
+        SqlCommand command(catalog.get());
         command.CommandText = T("select id, data, region from t1");
         IDataReader::Ptr reader = command.ExecuteReader();
         AssertT1Data(reader);
     }
 
+    const Char* TestFileName = T("test_query.hdf");
+
     TESTMETHOD(TestQueryDataFile)
     {
         PrepareT1DataFile(TestFileName);
 
-        BufferManager bufferManager(TestFileName);
-        Catalog::Ptr catalog = make_shared<Catalog>(&bufferManager);
-
-        SqlCommand command(catalog);
+        SqlConnection::Ptr connection = make_shared<SqlConnection>();
+        connection->Database = TestFileName;
+        connection->Open();
+        SqlCommand command(connection);
         command.CommandText = T("select id, data, region from t1");
         IDataReader::Ptr reader = command.ExecuteReader();
 
@@ -92,9 +95,7 @@ TESTCLASS(QueryExecutionTests)
         Assert::IsFalse(c3->IsNull);
 
         Assert::IsFalse(reader->MoveNext());
-    }
-
-    const Char* TestFileName = T("test_query.hdf");    
+    }      
 
     void PrepareT1DataFile(const String& fileName)
     {

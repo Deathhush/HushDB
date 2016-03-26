@@ -7,6 +7,7 @@ using namespace std;
 #include "..\..\Common\BasicType.h"
 #include "..\QueryProcessor\Analyzer.h"
 #include "..\QueryProcessor\Optimizer.h"
+#include "SqlConnection.h"
 
 using namespace Hush;
 
@@ -15,13 +16,23 @@ namespace HushDB
     class SqlCommand
     {
     public:
-        SqlCommand(Catalog::Ptr catalog)
+        SqlCommand(Catalog* catalog)
             :catalog(catalog)
         {
         }
 
+        SqlCommand(SqlConnection::Ptr connection)
+            :connection(connection)
+        {            
+        }
+
         IDataReader::Ptr ExecuteReader()
         {
+            if (this->connection != nullptr)
+            {
+                this->catalog = connection->GetCatalog();
+            }
+
             SqlToken::List tokens = Tokenizer::Parse(this->CommandText);
             SelectStmt::Ptr selectStmt = SelectStmt::Parse(tokens.begin(), tokens.end());
 
@@ -37,8 +48,9 @@ namespace HushDB
 
         String CommandText;
 
-    private:
-        Catalog::Ptr catalog;
+    private:        
+        SqlConnection::Ptr connection;
+        Catalog* catalog;
         IExecutionPlanNode::Ptr executionPlan;
         LogicalPlan::Ptr plan;
         IDataReader::Ptr reader;

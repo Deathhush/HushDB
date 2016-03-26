@@ -26,7 +26,7 @@ namespace HushDB
     class Analyzer
     {
     public:
-        Analyzer(Catalog::Ptr catalog)
+        Analyzer(Catalog* catalog)
         {
             this->catalog = catalog;
         }
@@ -69,7 +69,7 @@ namespace HushDB
         }
 
     private:
-        Catalog::Ptr catalog;
+        Catalog* catalog;
     };
 
 

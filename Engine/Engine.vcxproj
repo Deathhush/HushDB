@@ -23,6 +23,7 @@
     <ClInclude Include="Catalog.h" />
     <ClInclude Include="Client\Client.h" />
     <ClInclude Include="Client\SqlCommand.h" />
+    <ClInclude Include="Client\SqlConnection.h" />
     <ClInclude Include="QueryProcessor\Analyzer.h" />
     <ClInclude Include="QueryProcessor\ExecutionPlan.h" />
     <ClInclude Include="QueryProcessor\LogicalPlan.h" />

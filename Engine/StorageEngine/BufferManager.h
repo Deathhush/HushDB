@@ -21,6 +21,7 @@ namespace HushDB
 
     class BufferManager
     {
+    public:
         typedef shared_ptr<BufferManager> Ptr;
         typedef std::map<PageId, PageFrame> BufferPool;
     public:

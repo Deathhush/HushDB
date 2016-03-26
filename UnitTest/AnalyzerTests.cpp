@@ -26,7 +26,7 @@ TESTCLASS(AnalyzerTests)
 
         SelectStmt::Ptr selectStmt = SelectStmt::Parse(current, tokens.end());
 
-        Analyzer analyzer(catalog);
+        Analyzer analyzer(catalog.get());
         LogicalPlan::Ptr plan = analyzer.Analyze(selectStmt);
     }
 };

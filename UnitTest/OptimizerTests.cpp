@@ -27,10 +27,10 @@ TESTCLASS(OptimizerTests)
 
         SelectStmt::Ptr selectStmt = SelectStmt::Parse(current, tokens.end());
 
-        Analyzer analyzer(catalog);
+        Analyzer analyzer(catalog.get());
         LogicalPlan::Ptr plan = analyzer.Analyze(selectStmt);
 
-        Optimizer o(catalog);
+        Optimizer o(catalog.get());
         IExecutionPlanNode::Ptr executionPlan = o.Optimize(plan);
 
         Assert::IsNotNullPtr(executionPlan);
