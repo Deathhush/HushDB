@@ -45,5 +45,38 @@ TESTCLASS(CatalogTests)
         Catalog catalog(&bufferManager);
         IObjectDef::Ptr tableDef = catalog.FindTable(T("t1"));
         Assert::IsNotNullPtr(tableDef);
+        Assert::AreEqual(STR("t1"), tableDef->ObjectName());
+        Assert::AreEqual(1000, tableDef->ObjectId());
+        Assert::AreEqual(ObjectType::SimpleHeap, tableDef->Type());
+
+        ITupleDesc::Ptr schema = catalog.FindTableSchema(tableDef);
+        Assert::IsNotNullPtr(schema);
+        Assert::IsTrue(schema->ContainsColumn(STR("id")));
+        Assert::IsTrue(schema->ContainsColumn(STR("data")));
+        Assert::IsTrue(schema->ContainsColumn(STR("region")));
+        
+        tableDef = catalog.FindTable(T("t2"));
+        Assert::IsNotNullPtr(tableDef);
+        Assert::AreEqual(STR("t2"), tableDef->ObjectName());
+        Assert::AreEqual(1001, tableDef->ObjectId());
+        Assert::AreEqual(ObjectType::SimpleHeap, tableDef->Type());
+
+        schema = catalog.FindTableSchema(tableDef);
+        Assert::IsNotNullPtr(schema);
+        Assert::IsTrue(schema->ContainsColumn(STR("id")));
+        Assert::IsTrue(schema->ContainsColumn(STR("description")));
+        Assert::IsTrue(schema->ContainsColumn(STR("price")));
+
+        tableDef = catalog.FindTable(1000);
+        Assert::IsNotNullPtr(tableDef);
+        Assert::AreEqual(STR("t1"), tableDef->ObjectName());
+        Assert::AreEqual(1000, tableDef->ObjectId());
+        Assert::AreEqual(ObjectType::SimpleHeap, tableDef->Type());
+
+        tableDef = catalog.FindTable(1001);
+        Assert::IsNotNullPtr(tableDef);
+        Assert::AreEqual(STR("t2"), tableDef->ObjectName());
+        Assert::AreEqual(1001, tableDef->ObjectId());
+        Assert::AreEqual(ObjectType::SimpleHeap, tableDef->Type());
     }
 };

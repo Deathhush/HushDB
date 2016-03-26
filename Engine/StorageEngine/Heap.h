@@ -51,6 +51,8 @@ namespace HushDB
     class SimpleHeap
     {        
     public:
+        typedef shared_ptr<SimpleHeap> Ptr;
+
         SimpleHeap(BufferManager* bufferManager)
             : bufferManager(bufferManager)
         {

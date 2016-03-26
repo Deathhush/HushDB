@@ -30,9 +30,16 @@ namespace HushDB
                 {
                     return make_shared<MemoryTableScan>(dynamic_pointer_cast<MemoryTableDef>(tableDef));
                 }
+
+                if (tableDef->Type() == ObjectType::SimpleHeap)
+                {
+                    PageId heapHeaderPageId = dynamic_pointer_cast<TableDef>(tableDef)->GetHeaderPageId();                   
+                    
+                    return make_shared<SimpleHeapScan>(catalog->GetBufferManager(), heapHeaderPageId, catalog->FindTableSchema(tableDef));
+                }
             }
 
-            throw Exception(T("Invalid operation"));
+            throw Exception(T("Failed to optimize the logical plan."));
         }
     private:
         Catalog::Ptr catalog;

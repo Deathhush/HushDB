@@ -26,19 +26,22 @@ namespace HushDB
             SelectStmt::Ptr selectStmt = SelectStmt::Parse(tokens.begin(), tokens.end());
 
             Analyzer analyzer(catalog);
-            LogicalPlan::Ptr plan = analyzer.Analyze(selectStmt);
+            plan = analyzer.Analyze(selectStmt);
 
             Optimizer o(catalog);
-            IExecutionPlanNode::Ptr executionPlan = o.Optimize(plan);
+            executionPlan = o.Optimize(plan);
 
-            IDataReader::Ptr reader = executionPlan->Execute();
+            reader = executionPlan->Execute();
             return reader;
         }
 
         String CommandText;
 
     private:
-        Catalog::Ptr catalog;        
+        Catalog::Ptr catalog;
+        IExecutionPlanNode::Ptr executionPlan;
+        LogicalPlan::Ptr plan;
+        IDataReader::Ptr reader;
     };
 }
 

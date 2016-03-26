@@ -42,6 +42,7 @@ public:
             columnDefHeap.InsertDataRow(ColumnDefAccessor::CreateColumnDefRow(1001, STR("id"), 0, SqlType::Int));
             columnDefHeap.InsertDataRow(ColumnDefAccessor::CreateColumnDefRow(1001, STR("description"), 1, SqlType::String));
             columnDefHeap.InsertDataRow(ColumnDefAccessor::CreateColumnDefRow(1001, STR("price"), 2, SqlType::Float));
+            bufferManager.ReleasePage(headerPage->GetPageId());
         }
 
         BufferManager bufferManager(T("test_data.hdf"));

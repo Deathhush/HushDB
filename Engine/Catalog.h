@@ -301,6 +301,11 @@ namespace HushDB
             result.push_back(make_shared<DbInt>((Int32)ColumnType));
             return result;
         }
+
+        ColumnDef::Ptr ToColumnDef()
+        {
+            return make_shared<ColumnDef>(this->ColumnName(), this->ColumnType());
+        }
     };
 
     class Catalog
@@ -361,6 +366,33 @@ namespace HushDB
 
         IObjectDef::Ptr FindTable(const Int32& tableId)
         {
+            // TODO: Rewrite this using filter to eliminate duplication
+            if (this->bufferManager != nullptr)
+            {
+                // Try to find from $objects first            
+                DataFileHeaderPage* headerPage = bufferManager->GetPageAs<DataFileHeaderPage>(0);
+
+                SimpleHeap heap(bufferManager, headerPage->ObjectDefPageId);
+                IEnumerator<RowPtr>::Ptr enumerator = heap.GetEnumerator();
+
+                TableDef::Ptr result = nullptr;
+                while (enumerator->MoveNext())
+                {
+                    TableDefAccessor::Ptr accessor = make_shared<TableDefAccessor>(enumerator->Current().data);
+                    if (accessor->ObjectId() == tableId)
+                    {
+                        result = accessor->ToTableDef();
+                        break;
+                    }
+                }
+
+                bufferManager->ReleasePage(headerPage->GetPageId());
+                if (result != nullptr)
+                {
+                    return result;
+                }
+            }
+
             if (tableId < (Int32)this->tableList.size())
             {
                 return this->tableList[tableId];
@@ -373,12 +405,42 @@ namespace HushDB
 
         ITupleDesc::Ptr FindTableSchema(IObjectDef::Ptr tableDef)
         {
+            // Try to find from $columns first
+
+            if (this->bufferManager != nullptr)
+            {
+                DataFileHeaderPage* headerPage = bufferManager->GetPageAs<DataFileHeaderPage>(0);
+
+                SimpleHeap heap(bufferManager, headerPage->ColumnDefPageId);
+                IEnumerator<RowPtr>::Ptr enumerator = heap.GetEnumerator();
+
+                TupleDesc::Ptr result = make_shared<TupleDesc>();
+                while (enumerator->MoveNext())
+                {                    
+                    ColumnDefAccessor::Ptr accessor = make_shared<ColumnDefAccessor>(enumerator->Current().data);
+                    if (accessor->ObjectId() == tableDef->ObjectId())
+                    {
+                        // Assumes that the ColumnDef appears in ColumnIndex order
+                        result->AddColumn(*accessor->ToColumnDef());
+                    }
+                }
+
+                bufferManager->ReleasePage(headerPage->GetPageId());
+                if (result->ColumnList.size() > 0)
+                {
+                    return result;
+                }
+            }
+
             if (tableDef->Type() == ObjectType::MemoryTable)
             {
                 return (dynamic_pointer_cast<MemoryTableDef>(tableDef))->Schema;
             }
         }
-
+        BufferManager* GetBufferManager()
+        {
+            return this->bufferManager;
+        }
     private:
         map<String, MemoryTableDef::Ptr> tableMap;
         vector<MemoryTableDef::Ptr> tableList;

@@ -52,7 +52,7 @@ struct TestUtility
         return table;
     }
 
-    vector<DbValue::Ptr> GetT1Row1()
+    static vector<DbValue::Ptr> GetT1Row1()
     {
         vector<DbValue::Ptr> fields;
         fields.push_back(make_shared<DbInt>(1)); // size 4
@@ -62,7 +62,7 @@ struct TestUtility
         return fields;
     }
 
-    vector<DbValue::Ptr> GetT1Row2()
+    static vector<DbValue::Ptr> GetT1Row2()
     {
         vector<DbValue::Ptr> fields;
         fields.push_back(make_shared<DbInt>(2)); // size 4

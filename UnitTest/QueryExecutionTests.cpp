@@ -9,12 +9,19 @@ using namespace Hush::UnitTest;
 #include "..\Engine\Client\Client.h"
 #include "..\Engine\StorageEngine\MemoryStorage.h"
 #include "..\Engine\Client\SqlCommand.h"
+#include "..\Engine\Catalog.h"
+#include "..\Engine\StorageEngine\DataFile.h"
 using namespace HushDB;
 
 #include "TestUtility.h"
 
 TESTCLASS(QueryExecutionTests)
 {
+    virtual void TestInitialize() override
+    {
+        remove("test_query.hdf");
+    }
+
     TESTMETHOD(TestQueryMemoryTable)
     {
         MemoryTable::Ptr table = TestUtility::CreateMemoryTable();
@@ -33,7 +40,25 @@ TESTCLASS(QueryExecutionTests)
         SqlCommand command(catalog);
         command.CommandText = T("select id, data, region from t1");
         IDataReader::Ptr reader = command.ExecuteReader();
+        AssertT1Data(reader);
+    }
 
+    TESTMETHOD(TestQueryDataFile)
+    {
+        PrepareT1DataFile(TestFileName);
+
+        BufferManager bufferManager(TestFileName);
+        Catalog::Ptr catalog = make_shared<Catalog>(&bufferManager);
+
+        SqlCommand command(catalog);
+        command.CommandText = T("select id, data, region from t1");
+        IDataReader::Ptr reader = command.ExecuteReader();
+
+        AssertT1Data(reader);
+    }
+
+    void AssertT1Data(IDataReader::Ptr reader)
+    {
         Assert::IsTrue(reader->MoveNext());
 
         IDataRow::Ptr row1 = reader->Current();
@@ -67,6 +92,30 @@ TESTCLASS(QueryExecutionTests)
         Assert::IsFalse(c3->IsNull);
 
         Assert::IsFalse(reader->MoveNext());
+    }
+
+    const Char* TestFileName = T("test_query.hdf");    
+
+    void PrepareT1DataFile(const String& fileName)
+    {
+        DataFile::CreateEmptyDataFile(fileName);
+        BufferManager bufferManager(fileName);
+
+        DataFileHeaderPage* headerPage = bufferManager.GetPageAs<DataFileHeaderPage>(0);
+        SimpleHeap t1(&bufferManager);
+
+        SimpleHeap objectDefHeap(&bufferManager, headerPage->ObjectDefPageId);
+        objectDefHeap.InsertDataRow(TableDefAccessor::CreateTableDefRow(1000, T("t1"), ObjectType::SimpleHeap, t1.GetHeaderPageId()));
+
+        SimpleHeap columnDefHeap(&bufferManager, headerPage->ColumnDefPageId);
+        columnDefHeap.InsertDataRow(ColumnDefAccessor::CreateColumnDefRow(1000, STR("id"), 0, SqlType::Int));
+        columnDefHeap.InsertDataRow(ColumnDefAccessor::CreateColumnDefRow(1000, STR("data"), 1, SqlType::String));
+        columnDefHeap.InsertDataRow(ColumnDefAccessor::CreateColumnDefRow(1000, STR("region"), 2, SqlType::Int));
+
+        t1.InsertDataRow(TestUtility::GetT1Row1());
+        t1.InsertDataRow(TestUtility::GetT1Row2());
+
+        bufferManager.ReleasePage(headerPage->GetPageId());
     }
 };
 
