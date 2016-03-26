@@ -51,4 +51,24 @@ struct TestUtility
 
         return table;
     }
+
+    vector<DbValue::Ptr> GetT1Row1()
+    {
+        vector<DbValue::Ptr> fields;
+        fields.push_back(make_shared<DbInt>(1)); // size 4
+        fields.push_back(make_shared<DbString>(STR("test data 1"))); // size 22
+        fields.push_back(make_shared<DbInt>(10)); // size 4
+
+        return fields;
+    }
+
+    vector<DbValue::Ptr> GetT1Row2()
+    {
+        vector<DbValue::Ptr> fields;
+        fields.push_back(make_shared<DbInt>(2)); // size 4
+        fields.push_back(make_shared<DbString>(STR("test data 2"))); // size 22
+        fields.push_back(make_shared<DbInt>(20)); // size 4
+
+        return fields;
+    }
 };

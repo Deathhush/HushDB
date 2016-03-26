@@ -31,8 +31,8 @@ public:
 
             DataFileHeaderPage* headerPage = bufferManager.GetPageAs<DataFileHeaderPage>(0);
             SimpleHeap objectDefHeap(&bufferManager, headerPage->ObjectDefPageId);
-            objectDefHeap.InsertDataRow(TableDefAccessor::CreateTableDefRow(1000, T("t1"), ObjectType::SimpleHeap));
-            objectDefHeap.InsertDataRow(TableDefAccessor::CreateTableDefRow(1001, T("t2"), ObjectType::SimpleHeap));
+            objectDefHeap.InsertDataRow(TableDefAccessor::CreateTableDefRow(1000, T("t1"), ObjectType::SimpleHeap, InvalidPageId));
+            objectDefHeap.InsertDataRow(TableDefAccessor::CreateTableDefRow(1001, T("t2"), ObjectType::SimpleHeap, InvalidPageId));
 
             SimpleHeap columnDefHeap(&bufferManager, headerPage->ColumnDefPageId);
             columnDefHeap.InsertDataRow(ColumnDefAccessor::CreateColumnDefRow(1000, STR("id"), 0, SqlType::Int));

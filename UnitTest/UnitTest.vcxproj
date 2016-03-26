@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="AnalyzerTests.cpp" />
     <ClCompile Include="BufferManagerTests.cpp" />
+    <ClCompile Include="CatalogTests.cpp" />
     <ClCompile Include="ClientTests.cpp" />
     <ClCompile Include="DataFileTests.cpp" />
     <ClCompile Include="DataRowTests.cpp" />

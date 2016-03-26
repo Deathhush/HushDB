@@ -161,6 +161,14 @@ namespace HushDB
                 currentPageId = InvalidPageId;                
             }
 
+            ~Enumerator()
+            {
+                if (this->currentPageId != InvalidPageId && this->currentPageId != EndOfPage)
+                {
+                    this->heap->bufferManager->ReleasePage(this->currentPageId);
+                }
+            }
+
             virtual bool MoveNext() override
             {
                 if (currentPageId == EndOfPage)

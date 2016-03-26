@@ -47,7 +47,7 @@ namespace HushDB
     public:
         static void CreateEmptyDataFile(const String& fileName)
         {
-            BufferManager bufferManager(T("test_data.hdf"));
+            BufferManager bufferManager(fileName);
             DataFileHeaderPage* headerPage = bufferManager.AllocatePage<DataFileHeaderPage>();
             SimpleHeap objectDefHeap(&bufferManager);
             headerPage->ObjectDefPageId = objectDefHeap.GetHeaderPageId();

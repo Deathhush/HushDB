@@ -2,6 +2,7 @@
 #define HUSH_CATALOG_H
 
 #include <vector>
+#include <memory>
 #include <map>
 using namespace std;
 
@@ -10,6 +11,7 @@ using namespace std;
 #include "StorageEngine\DataRow.h"
 #include "Schema.h"
 #include "StorageEngine\Page.h"
+#include "StorageEngine\DataFile.h"
 using namespace Hush;
 
 namespace HushDB
@@ -27,6 +29,40 @@ namespace HushDB
         virtual Int32 ObjectId() = 0;
         virtual String ObjectName() = 0;
         virtual ObjectType Type() = 0;
+    };
+
+    struct TableDef : public IObjectDef
+    {
+        typedef shared_ptr<TableDef> Ptr;
+
+        TableDef()
+        {            
+        }
+
+        virtual Int32 ObjectId() override
+        {
+            return this->Id;
+        }
+
+        virtual String ObjectName() override
+        {
+            return this->TableName;
+        }
+
+        virtual ObjectType Type() override
+        {
+            return this->ObjectType;
+        }
+
+        PageId GetHeaderPageId()
+        {
+            return this->HeaderPageId;
+        }
+
+        Int32 Id;
+        String TableName;
+        ObjectType ObjectType;
+        PageId HeaderPageId;
     };
 
     struct MemoryTableDef : public IObjectDef
@@ -56,57 +92,6 @@ namespace HushDB
         String Name;
         TupleDesc::Ptr Schema;
         MemoryTable::Ptr Table;
-    };
-
-    class Catalog
-    {
-    public:
-        typedef shared_ptr<Catalog> Ptr;
-
-        void AddTable(const MemoryTableDef& table)
-        {
-            MemoryTableDef::Ptr tablePtr = make_shared<MemoryTableDef>(table);
-            tablePtr->Id = this->tableList.size();
-            this->tableMap[table.Name] = tablePtr;
-            this->tableList.push_back(tablePtr);
-        }
-
-        IObjectDef::Ptr FindTable(const String& tableName)
-        {
-            auto it = this->tableMap.find(tableName);
-            if (it != this->tableMap.end())
-            {
-                return it->second;
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
-
-        IObjectDef::Ptr FindTable(const Int32& tableId)
-        {
-            if (tableId < (Int32)this->tableList.size())
-            {
-                return this->tableList[tableId];
-            }
-            else
-            {
-                return nullptr;
-            }
-        }
-
-        ITupleDesc::Ptr FindTableSchema(IObjectDef::Ptr tableDef)
-        {
-            if (tableDef->Type() == ObjectType::MemoryTable)
-            {
-                return (dynamic_pointer_cast<MemoryTableDef>(tableDef))->Schema;
-            }
-        }
-    
-    private:
-        map<String, MemoryTableDef::Ptr> tableMap;
-        vector<MemoryTableDef::Ptr> tableList;
     };
 
     // The schema for $tables table
@@ -167,6 +152,8 @@ namespace HushDB
 
     struct TableDefAccessor : public IObjectDef, public DataRow
     {
+        typedef shared_ptr<TableDefAccessor> Ptr;
+
         TableDefAccessor(Byte* data)
             :DataRow(TableDefSchema, data)
         {}
@@ -189,18 +176,30 @@ namespace HushDB
             return (ObjectType)row->GetValue<DbInt>(T("ObjectType"))->Value;
         }
 
-        PageId HeaderPageId()
+        PageId GetHeaderPageId()
         {
             IDataRow* row = this;
             return (PageId)row->GetValue<DbInt>(T("HeaderPageId"))->Value;
         }
 
-        static vector<DbValue::Ptr> CreateTableDefRow(Int32 objectId, String objectName, ObjectType type)
+        TableDef::Ptr ToTableDef()
+        {
+            TableDef::Ptr result = make_shared<TableDef>();
+            result->Id = this->ObjectId();
+            result->TableName = this->ObjectName();
+            result->ObjectType = this->Type();
+            result->HeaderPageId = this->GetHeaderPageId();
+
+            return result;
+        }
+
+        static vector<DbValue::Ptr> CreateTableDefRow(Int32 objectId, String objectName, ObjectType type, PageId headerPageId)
         {
             vector<DbValue::Ptr> result;
             result.push_back(make_shared<DbInt>(objectId));
             result.push_back(make_shared<DbString>(objectName));
             result.push_back(make_shared<DbInt>((Int32)type));
+            result.push_back(make_shared<DbInt>(headerPageId));
             return result;
         }
     };
@@ -302,6 +301,88 @@ namespace HushDB
             result.push_back(make_shared<DbInt>((Int32)ColumnType));
             return result;
         }
+    };
+
+    class Catalog
+    {
+    public:
+        typedef shared_ptr<Catalog> Ptr;
+
+        Catalog(BufferManager* bufferManager = nullptr)
+            :bufferManager(bufferManager)
+        {}        
+
+        void AddTable(const MemoryTableDef& table)
+        {
+            MemoryTableDef::Ptr tablePtr = make_shared<MemoryTableDef>(table);
+            tablePtr->Id = this->tableList.size();
+            this->tableMap[table.Name] = tablePtr;
+            this->tableList.push_back(tablePtr);
+        }
+
+        IObjectDef::Ptr FindTable(const String& tableName)
+        {
+            if (this->bufferManager != nullptr)
+            {
+                // Try to find from $objects first            
+                DataFileHeaderPage* headerPage = bufferManager->GetPageAs<DataFileHeaderPage>(0);
+
+                SimpleHeap heap(bufferManager, headerPage->ObjectDefPageId);
+                IEnumerator<RowPtr>::Ptr enumerator = heap.GetEnumerator();
+
+                TableDef::Ptr result = nullptr;
+                while (enumerator->MoveNext())
+                {
+                    TableDefAccessor::Ptr accessor = make_shared<TableDefAccessor>(enumerator->Current().data);
+                    if (accessor->ObjectName() == tableName)
+                    {
+                        result = accessor->ToTableDef();
+                        break;
+                    }
+                }
+
+                bufferManager->ReleasePage(headerPage->GetPageId());
+                if (result != nullptr)
+                {
+                    return result;
+                }
+            }
+
+            auto it = this->tableMap.find(tableName);
+            if (it != this->tableMap.end())
+            {
+                return it->second;
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+        IObjectDef::Ptr FindTable(const Int32& tableId)
+        {
+            if (tableId < (Int32)this->tableList.size())
+            {
+                return this->tableList[tableId];
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+
+        ITupleDesc::Ptr FindTableSchema(IObjectDef::Ptr tableDef)
+        {
+            if (tableDef->Type() == ObjectType::MemoryTable)
+            {
+                return (dynamic_pointer_cast<MemoryTableDef>(tableDef))->Schema;
+            }
+        }
+
+    private:
+        map<String, MemoryTableDef::Ptr> tableMap;
+        vector<MemoryTableDef::Ptr> tableList;
+        BufferManager* bufferManager;
     };
 
 }

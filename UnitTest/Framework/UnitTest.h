@@ -126,7 +126,7 @@ namespace Hush
                 RunTests((ClassType*)this);
             }
 
-        protected:            
+        public:            
             virtual void ClassInitialize() {} 
             virtual void ClassCleanup() {}
             virtual void TestInitialize() {}
@@ -144,7 +144,7 @@ namespace Hush
         struct ClassName##Registrator : public TestClassRegistrator<ClassName> \
         {    virtual const Hush::Char* GetClassName() { return L#ClassName; } }; \
         ClassName##Registrator ClassName##Instance; \
-        class ClassName : public TestClassBase<ClassName> \
+        struct ClassName : public TestClassBase<ClassName> \
 
 #define TESTMETHOD(MethodName) \
         struct TestMethodInfo##MethodName : public TestMethodInfo<ClassType> \
