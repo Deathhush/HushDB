@@ -24,6 +24,7 @@ namespace HushDB
                 type =
                     value == T("select") ? SqlTokenType::Select:
                     value == T("from") ? SqlTokenType::From :
+                    value == T("where") ? SqlTokenType::Where :
                     SqlTokenType::Identifier;
                 break;            
             }
@@ -63,6 +64,9 @@ namespace HushDB
                 case T('*'):
                     AddToken(1, SqlTokenType::Star);
                     break;
+                case T('='):
+                    AddToken(1, SqlTokenType::Equal);
+                    break;
                 case T(' '):
                 case T('\t'):
                 case T('\r'):
@@ -72,7 +76,12 @@ namespace HushDB
                     rowBegin = reading + 1;
                     break;
                 default:
-                    if (T('a') <= c && c <= T('z') || T('A') <= c && c <= T('Z') || c == T('_'))
+                    if (T('0') <= c && c <= T('9'))
+                    {
+                        begin = reading;
+                        state = State::InInteger;
+                    }
+                    else if (T('a') <= c && c <= T('z') || T('A') <= c && c <= T('Z') || c == T('_') || c == T('$'))
                     {
                         begin = reading;
                         state = State::Identifier;
@@ -96,8 +105,20 @@ namespace HushDB
                     reading--;
                     begin = nullptr;
                 }
-                break;                
-            default:
+                break;
+            case State::InInteger:
+                if (T('0') <= c && c <= T('9'))
+                {
+                    // stay in State::InInteger
+                }
+                else
+                {
+                    AddToken(reading - begin, SqlTokenType::Integer);
+                    state = State::Begin;
+                    reading--;
+                    begin = nullptr;
+
+                }
                 break;
             }
 
@@ -105,7 +126,10 @@ namespace HushDB
         }
 
         switch (state)
-        {        
+        {   
+        case State::InInteger:
+            AddToken(reading - begin, SqlTokenType::Integer);
+            break;
         case State::Identifier:
             AddToken(reading - begin, SqlTokenType::Identifier);
             break;

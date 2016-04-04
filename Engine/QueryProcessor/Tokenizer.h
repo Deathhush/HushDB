@@ -11,28 +11,42 @@ namespace HushDB
     enum class SqlTokenType
     {
         // For reporting error
-        Unknown, 
+        Unknown,
 
+        // Types
+        Integer,
         Identifier,
 
         // Keywords
         Select,
         From,
+        Where,
 
         // Symbols
         Star,
-        Comma
+        Comma,
+        Equal
     };
 
     struct SqlToken
     {
         typedef vector<SqlToken> List;
         SqlTokenType TokenType;
+        String Value;
 
         int Row;
         int Column;
 
-        String Value;
+        bool operator==(const SqlToken& token) const
+        {
+            return (this->TokenType == token.TokenType
+                && this->Value == token.Value);
+        }
+
+        bool operator!=(const SqlToken& token) const
+        {
+            return !this->operator==(token);
+        }
     };
 
     struct TokenizerException : public Exception
@@ -55,6 +69,7 @@ namespace HushDB
         {
             Begin,
             Identifier,
+            InInteger
         };
 
     private:

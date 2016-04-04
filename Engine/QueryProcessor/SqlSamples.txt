@@ -15,3 +15,7 @@ SelectStmt := select <TargetList> <FromClause>
 TargetList := <TargetElement> { , <TargetList> }
 TargetElement := identifier | *
 FromClause := from identifier
+
+4/4/2016
+
+select * from $objects where object_id=1
