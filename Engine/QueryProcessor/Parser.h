@@ -9,13 +9,18 @@ using namespace Hush;
 
 namespace HushDB
 {
+    struct IntegerConstant
+    {
+        typedef shared_ptr<IntegerConstant> Ptr;
+        int Value;
+    };
+
     class Parser
     {
     public:
         static bool ConsumeToken(SqlToken::List::iterator& it, SqlToken::List::iterator& end, SqlTokenType type);
         static StringPtr ConsumeIdentifier(SqlToken::List::iterator& it, SqlToken::List::iterator& end);
-
-
+        static IntegerConstant::Ptr ConsumeIntegerConstant(SqlToken::List::iterator& it, SqlToken::List::iterator& end);
     };
 
     struct FromClause
@@ -43,6 +48,23 @@ namespace HushDB
         vector<TargetElement::Ptr> Elements;
     };
 
+    struct Expression
+    {
+        typedef shared_ptr<Expression> Ptr;
+        static Expression::Ptr Parse(SqlToken::List::iterator& it, SqlToken::List::iterator& end);
+
+        StringPtr ColumnName;
+        IntegerConstant::Ptr Value;
+    };
+
+    struct WhereClause
+    {
+        typedef shared_ptr<WhereClause> Ptr;
+        static WhereClause::Ptr Parse(SqlToken::List::iterator& it, SqlToken::List::iterator& end);
+        
+        Expression::Ptr Expression;
+    };
+
     struct SelectStmt
     {
         typedef shared_ptr<SelectStmt> Ptr;
@@ -50,6 +72,7 @@ namespace HushDB
 
         TargetList::Ptr TargetList;
         FromClause::Ptr FromClause;
+        WhereClause::Ptr WhereCluase;
     };
 }
 

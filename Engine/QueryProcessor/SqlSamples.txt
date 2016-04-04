@@ -1,3 +1,26 @@
+4/4/2016
+
+select * from $objects where object_id=1
+
+symbol: ,  * =
+keywords: select from where
+identifier
+integer
+
+SelectStmt := <select> TargetList FromClause [WhereClause]
+TargetList := TargetElement { , TargetList }
+TargetElement := <identifier> | *
+FromClause := <from> <identifier>
+WhereClause := <where> Expression
+Expression := <identifier> = <integer>
+
+2/17/2016
+
+SelectStmt := select <TargetList> <FromClause>
+TargetList := <TargetElement> { , <TargetList> }
+TargetElement := identifier | *
+FromClause := from identifier
+
 2/14/2016
 
 keywords are all in lower case
@@ -9,13 +32,3 @@ symbol: ,  *
 keywords: select from
 identifier
 
-2/17/2016
-
-SelectStmt := select <TargetList> <FromClause>
-TargetList := <TargetElement> { , <TargetList> }
-TargetElement := identifier | *
-FromClause := from identifier
-
-4/4/2016
-
-select * from $objects where object_id=1

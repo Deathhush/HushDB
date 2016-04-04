@@ -54,6 +54,9 @@
     <ClInclude Include="Client\SqlConnection.h">
       <Filter>Client</Filter>
     </ClInclude>
+    <ClInclude Include="..\Common\Convert.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QueryProcessor\Tokenizer.cpp">

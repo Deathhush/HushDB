@@ -142,4 +142,16 @@ TESTCLASS(ParserTests)
         Assert::IsNotNullPtr(fromClause);
         Assert::AreEqual(STR("table1"), *(fromClause->TableName));
     }
+
+    TESTMETHOD(TestSelectWithWhere)
+    {
+        String query(T("select * from $objects where object_id=1"));
+        SqlToken::List tokens = Tokenizer::Parse(query);
+        auto current = tokens.begin();
+
+        SelectStmt::Ptr result = SelectStmt::Parse(current, tokens.end());
+
+        Assert::IsNotNullPtr(result);
+        Assert::AreEqual(tokens.end(), current);
+    }
 };
