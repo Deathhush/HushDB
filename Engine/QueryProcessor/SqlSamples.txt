@@ -1,3 +1,7 @@
+7/6/2016
+
+symbol: ,  * = > >= < <= <>
+
 4/4/2016
 
 select * from $objects where object_id=1

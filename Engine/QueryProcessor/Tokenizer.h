@@ -24,8 +24,13 @@ namespace HushDB
 
         // Symbols
         Star,
-        Comma,
-        Equal
+        Comma,        
+        GreaterThan,
+        LessThan,
+        Equal,
+        GreaterOrEqual,
+        LessOrEqual,
+        NotEqual,
     };
 
     struct SqlToken

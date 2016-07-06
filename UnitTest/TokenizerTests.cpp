@@ -58,4 +58,45 @@ TESTCLASS(TokenizerTests)
         Assert::AreEqual(SqlToken{ SqlTokenType::Equal, T("=") }, *token_iter++);
         Assert::AreEqual(SqlToken{ SqlTokenType::Integer, T("1") }, *token_iter++);        
     }
+
+    TESTMETHOD(TestWherePredicateOperator)
+    {
+        String query(T("select * from $objects where object_id>=1"));
+        vector<SqlToken> tokens = Tokenizer::Parse(query);
+
+        Assert::AreEqual<int>(8, tokens.size());
+
+        auto token_iter = tokens.begin();
+        Assert::AreEqual(SqlToken{ SqlTokenType::Select, T("select") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::Star, T("*") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::From, T("from") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::Identifier, T("$objects") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::Where, T("where") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::Identifier, T("object_id") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::GreaterOrEqual, T(">=") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::Integer, T("1") }, *token_iter++);
+    }
+
+    TESTMETHOD(TestPredicateOperator)
+    {        
+        TestPredicateOperator(T(">"), SqlTokenType::GreaterThan);
+        TestPredicateOperator(T(">="), SqlTokenType::GreaterOrEqual);
+        TestPredicateOperator(T("="), SqlTokenType::Equal);
+        TestPredicateOperator(T("<"), SqlTokenType::LessThan);
+        TestPredicateOperator(T("<="), SqlTokenType::LessOrEqual);
+        TestPredicateOperator(T("<>"), SqlTokenType::NotEqual);
+    }
+
+    void TestPredicateOperator(String op, SqlTokenType opType)
+    {
+        String query(STR("object_id") + op + STR("1"));
+        vector<SqlToken> tokens = Tokenizer::Parse(query);
+
+        Assert::AreEqual<int>(3, tokens.size());
+
+        auto token_iter = tokens.begin();
+        Assert::AreEqual(SqlToken{ SqlTokenType::Identifier, T("object_id") }, *token_iter++);
+        Assert::AreEqual(SqlToken{ opType, op }, *token_iter++);
+        Assert::AreEqual(SqlToken{ SqlTokenType::Integer, T("1") }, *token_iter++);
+    }
 };

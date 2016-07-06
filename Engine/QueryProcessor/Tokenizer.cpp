@@ -75,6 +75,32 @@ namespace HushDB
                     rowNumber++;
                     rowBegin = reading + 1;
                     break;
+                case T('>'):
+                    switch (reading[1])
+                    {
+                    case T('='):
+                        AddToken(2, SqlTokenType::GreaterOrEqual);
+                        reading++;
+                        break;
+                    default:
+                        AddToken(1, SqlTokenType::GreaterThan);
+                    }
+                    break;
+                case T('<'):
+                    switch (reading[1])
+                    {
+                    case T('='):
+                        AddToken(2, SqlTokenType::LessOrEqual);
+                        reading++;
+                        break;
+                    case T('>'):
+                        AddToken(2, SqlTokenType::NotEqual);
+                        reading++;
+                        break;
+                    default:
+                        AddToken(1, SqlTokenType::LessThan);
+                    }
+                    break;
                 default:
                     if (T('0') <= c && c <= T('9'))
                     {
